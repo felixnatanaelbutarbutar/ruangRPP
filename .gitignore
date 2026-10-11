@@ -1,0 +1,6 @@
+node_modules/
+tools/perencanaan/qa/
+.env
+.env.*
+!.env.example
+RUANGRPP_PROCESSED/

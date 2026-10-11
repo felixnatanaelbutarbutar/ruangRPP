@@ -1,0 +1,66 @@
+RUANGRPP - CP PENDIDIKAN AGAMA DAN BUDI PEKERTI
+
+ISI FOLDER
+Simpan dokumen CP resmi Pendidikan Agama dan Budi Pekerti yang relevan untuk SD. Utamakan PDF asli.
+
+PETUNJUK KHUSUS
+Cantumkan agama secara spesifik dalam nama/metadata; jangan mencampur sumber antaragama. Periksa perubahan CP yang berlaku dan lampirannya. Jika satu PDF mencakup banyak mapel, simpan satu file di folder induk CP dan rujuk ID yang sama dari metadata cakupan. Periksa keputusan, lampiran, fase dan lokasi bagian sebelum menandai valid.
+
+PANDUAN PENAMAAN FILE
+Pola dokumen sumber:
+KATEGORI_MAPEL_JENJANG_CAKUPAN_TOPIK_Tahun_TERBIT.ext
+
+Arti setiap bagian:
+- KATEGORI: CP, Modul_Ajar, Panduan_Guru, Buku, atau kategori sesuai isi.
+- MAPEL: nama lengkap, misalnya Bahasa_Indonesia. Sebutkan agama, cabang seni atau bahasa daerah jika relevan.
+- JENJANG: SD jika khusus SD; Lintas_Jenjang jika file memang mencakup lebih dari satu jenjang.
+- CAKUPAN: gunakan Kelas_1 sampai Kelas_6 bila kelas disebutkan, atau Fase_A/Fase_B/Fase_C bila sumber menyebut fase.
+- TOPIK: judul materi singkat yang sesuai isi, misalnya Penjumlahan. Jangan menambahkan topik yang tidak tercantum.
+- Tahun_TERBIT: tahun penerbitan/edisi yang tercantum dalam dokumen, misalnya Tahun_2025.
+- ext: ekstensi file asli, misalnya .pdf atau .docx. Jangan mengganti ekstensi untuk mengubah format.
+
+Memilih kelas atau fase:
+1. Untuk contoh modul kelas tertentu, utamakan Kelas_1, Kelas_2, dan seterusnya.
+2. Untuk CP berbasis fase, gunakan fase sesuai dokumen. Jangan menamai ulang CP fase menjadi kelas tertentu tanpa dasar.
+3. Jika dokumen secara eksplisit menyebut keduanya, boleh gunakan Fase_A_Kelas_1.
+4. Jika mencakup beberapa kelas, gunakan Kelas_1_dan_2 atau Kelas_1_sampai_6 sesuai cakupan nyata.
+5. Jika mencakup beberapa fase, gunakan Fase_A_dan_B atau Fase_A_B_C sesuai isi.
+6. Untuk cakupan campuran gunakan Lintas_Mapel, Lintas_Fase atau Lintas_Jenjang sesuai bukti; rinci cakupan di Excel.
+7. Bila cakupan belum diketahui, gunakan Cakupan_Tidak_Diketahui dan catat kebutuhan pemeriksaan di Excel.
+8. Semester_1 atau Semester_2 hanya ditambahkan setelah kelas/fase jika disebut dalam dokumen. Jangan menebak semester dari topik.
+
+Tahun terbit, tahun ajaran dan versi:
+- Tahun terbit bukan tahun unduh, tahun dicatat, tahun ajaran, atau tahun regulasi yang sekadar dikutip.
+- Jika dokumen mengutip CP 2025 tetapi diterbitkan 2026, Tahun_2026 dipakai hanya jika tahun terbit itu terbukti; acuan CP dicatat terpisah di Excel.
+- Jika tahun terbit tidak tercantum, gunakan Tahun_Tidak_Diketahui.
+- Tahun ajaran dicatat di metadata. Bila perlu membedakan file, tambahkan Tahun_Ajaran_2025_2026 sebagai token terpisah, hanya jika tercantum.
+- Jika edisi/versi dinyatakan, tambahkan Edisi_Revisi atau Versi_2 sebelum token Tahun, sesuai sumber. Jangan membuat nomor versi sendiri untuk dokumen eksternal.
+- Dokumen buatan tim boleh menggunakan versi internal yang benar-benar ditetapkan, misalnya v0_1. Versi internal bukan tahun terbit sumber resmi.
+
+Aturan praktis:
+- Gunakan underscore, tanpa spasi. Hindari karakter /, \, :, *, ?, tanda kutip, <, > dan | dalam nama file.
+- Token mapel, cakupan atau topik boleh dihilangkan untuk panduan umum yang memang tidak memerlukannya; jangan mengarang isian hanya untuk memenuhi pola.
+- Jika dua file berbeda memiliki nama sama, tambahkan ID dokumen di akhir nama sebelum ekstensi. Jika isinya identik, simpan satu file.
+- Simpan nama file asli dan nama baru di Excel. Penamaan ulang tidak boleh mengubah isi file.
+- Semua contoh di bawah hanya ilustrasi pola, bukan bukti bahwa dokumen tersebut tersedia, resmi atau sesuai kurikulum.
+
+CONTOH UNTUK FOLDER INI
+- CP_Pendidikan_Agama_Islam_dan_Budi_Pekerti_SD_Fase_A_Tahun_2025.pdf
+- CP_Pendidikan_Agama_Islam_dan_Budi_Pekerti_SD_Fase_A_B_C_Tahun_Tidak_Diketahui.pdf
+- Topik boleh dihilangkan pada CP yang memuat keseluruhan capaian. Contoh lintas fase hanya dipakai jika semua fase itu benar-benar tercakup.
+- Ganti nama agama sesuai dokumen yang sebenarnya; contoh Islam tidak mewakili semua agama.
+
+ALUR TIM
+1. Simpan file asli tanpa mengubah isinya; periksa duplikasi sebelum menambah salinan.
+2. Gunakan nama KATEGORI_MAPEL_JENJANG_FASE-ATAU-KELAS_TOPIK_TAHUN.ext, disesuaikan cakupan nyata. Gunakan underscore.
+3. Jangan menebak tahun/versi. Jika tahun tidak diketahui, gunakan Tahun_Tidak_Diketahui. Simpan nama asli di metadata.
+4. Catat satu baris per file sumber di Excel pada folder 05_INVENTARIS_METADATA: ID, sumber URL, cakupan, penerbit, nama/path lokal, status, pengumpul dan tanggal.
+5. Catat bukti izin dan batas penggunaannya. Publik/terunduh tidak otomatis mengizinkan layanan komersial atau unggah ulang ke GitHub.
+6. Jika ragu mengenai sumber, izin atau kualitas, gunakan 99_PERLU_DITINJAU dan tulis alasannya di inventaris.
+7. Teks hasil ekstraksi/OCR disimpan terpisah dari file asli saat tahap pemrosesan dimulai.
+
+CATATAN REPOSITORI
+PETUNJUK.txt menjaga folder tetap tercatat di Git meskipun belum berisi dokumen. File petunjuk ini bukan sumber RAG.
+Masukkan dokumen ke repositori bersama hanya jika hak berbagi ulangnya sesuai. Jika tidak, simpan di penyimpanan tim yang berizin dan catat lokasi aksesnya.
+Keberadaan file di folder tidak berarti sudah diverifikasi atau aktif untuk generator.
+
