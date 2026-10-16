@@ -1,6 +1,7 @@
 'use client';
 import { FormEvent, useCallback, useEffect, useId, useRef, useState } from 'react';
 import { AdminPanels, AdminView, OperationsSummary } from './admin-panels';
+import { LandingView } from './landing';
 
 /* ══════════════════════════════════════════
    TYPES
@@ -662,11 +663,21 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const [notice, setNotice] = useState('');
   const [loginBusy, setLoginBusy] = useState(false);
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && ['#login', '#admin'].includes(window.location.hash)) {
+      setShowAdminLogin(true);
+    }
+  }, []);
 
   useEffect(() => { api('/me').then(setUser).catch(() => {}).finally(() => setBooting(false)); }, []);
   useEffect(() => {
     const read = () => {
       const target = window.location.hash.slice(1) as View;
+      if (['login', 'admin'].includes(target)) {
+        setShowAdminLogin(true);
+      }
       const restricted = ['models', 'users', 'activity', 'finance'].includes(target);
       setView(target in NAV_LABELS && (!restricted || user?.role === 'admin') ? target : 'overview');
       setNotice('');
@@ -723,28 +734,52 @@ export default function Page() {
     </div>
   );
 
-  if (!user) return (
-    <main className="login-page">
-      <section className="login-panel">
-        <div className="login-box">
-          <div className="brand">Ruang<span>RPP</span></div>
-          <h1>Masuk ke admin</h1>
-          <p>Kelola sumber dan operasional RuangRPP.</p>
-          <form onSubmit={login}>
-            <label>Email<input name="email" type="email" autoComplete="username" required placeholder="nama@tim.id" /></label>
-            <label>Kata Sandi<input name="password" type="password" autoComplete="current-password" required /></label>
-            {error && <div role="alert" className="error"><Icon name="warning" size={15} />{error}</div>}
-            <button className="primary" disabled={loginBusy}>
-              {loginBusy ? 'Memeriksa...' : 'Masuk ke Ruang Kerja'}<Icon name="arrow" size={18} />
+  if (!user) {
+    if (!showAdminLogin) {
+      return (
+        <LandingView
+          onOpenLogin={() => {
+            setShowAdminLogin(true);
+            window.location.hash = 'login';
+          }}
+        />
+      );
+    }
+
+    return (
+      <main className="login-page">
+        <section className="login-panel">
+          <div className="login-box">
+            <button
+              type="button"
+              className="text-button"
+              style={{ marginBottom: 18, display: 'inline-flex', alignItems: 'center', gap: 6 }}
+              onClick={() => {
+                setShowAdminLogin(false);
+                window.location.hash = '';
+              }}
+            >
+              &larr; Kembali ke Beranda RuangRPP
             </button>
-          </form>
-          <div className="login-note">
-            <p>Akses khusus tim. Akun dibuat oleh pengelola RuangRPP; tidak ada pendaftaran publik.</p>
+            <div className="brand">Ruang<span>RPP</span></div>
+            <h1>Masuk ke admin</h1>
+            <p>Kelola sumber dan operasional RuangRPP.</p>
+            <form onSubmit={login}>
+              <label>Email<input name="email" type="email" autoComplete="username" required placeholder="nama@tim.id" /></label>
+              <label>Kata Sandi<input name="password" type="password" autoComplete="current-password" required /></label>
+              {error && <div role="alert" className="error"><Icon name="warning" size={15} />{error}</div>}
+              <button className="primary" disabled={loginBusy}>
+                {loginBusy ? 'Memeriksa...' : 'Masuk ke Ruang Kerja'}<Icon name="arrow" size={18} />
+              </button>
+            </form>
+            <div className="login-note">
+              <p>Akses khusus tim dan peninjau. Langganan dan kuota pengguna terhubung melalui paket layanan.</p>
+            </div>
           </div>
-        </div>
-      </section>
-    </main>
-  );
+        </section>
+      </main>
+    );
+  }
 
   function docTable(list: Doc[]) {
     if (!list.length) return (
