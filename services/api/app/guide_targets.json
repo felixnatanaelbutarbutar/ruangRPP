@@ -1,0 +1,318 @@
+[
+  {
+    "id": "PMP-SD-01",
+    "title": "Bahasa Indonesia",
+    "subject": "Bahasa Indonesia",
+    "variant": "",
+    "original_phases": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "F Tingkat Lanjut"
+    ],
+    "source_url": "https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp",
+    "note": "Fase mengikuti daftar yang dikirim pengguna; cocokkan kembali dengan PDF. Tahun, halaman, versi dan izin belum diperiksa."
+  },
+  {
+    "id": "PMP-SD-02",
+    "title": "Bahasa Inggris",
+    "subject": "Bahasa Inggris",
+    "variant": "",
+    "original_phases": [
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "F Tingkat Lanjut"
+    ],
+    "source_url": "https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp",
+    "note": "Fase mengikuti daftar yang dikirim pengguna; cocokkan kembali dengan PDF. Tahun, halaman, versi dan izin belum diperiksa."
+  },
+  {
+    "id": "PMP-SD-03",
+    "title": "IPAS",
+    "subject": "IPAS",
+    "variant": "",
+    "original_phases": [
+      "B",
+      "C"
+    ],
+    "source_url": "https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp",
+    "note": "Fase mengikuti daftar yang dikirim pengguna; cocokkan kembali dengan PDF. Tahun, halaman, versi dan izin belum diperiksa."
+  },
+  {
+    "id": "PMP-SD-04",
+    "title": "Kepercayaan Terhadap Tuhan Yang Maha Esa dan Budi Pekerti",
+    "subject": "Kepercayaan Terhadap Tuhan Yang Maha Esa dan Budi Pekerti",
+    "variant": "",
+    "original_phases": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "source_url": "https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp",
+    "note": "Fase mengikuti daftar yang dikirim pengguna; cocokkan kembali dengan PDF. Tahun, halaman, versi dan izin belum diperiksa."
+  },
+  {
+    "id": "PMP-SD-05",
+    "title": "Koding dan Kecerdasan Artifisial",
+    "subject": "Koding dan Kecerdasan Artifisial",
+    "variant": "",
+    "original_phases": [
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "source_url": "https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp",
+    "note": "Mata pelajaran pilihan; penerapan sekolah perlu dikonfirmasi. Fase mengikuti daftar yang dikirim pengguna; cocokkan kembali dengan PDF. Tahun, halaman, versi dan izin belum diperiksa."
+  },
+  {
+    "id": "PMP-SD-06",
+    "title": "Matematika",
+    "subject": "Matematika",
+    "variant": "",
+    "original_phases": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "F Tingkat Lanjut"
+    ],
+    "source_url": "https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp",
+    "note": "Fase mengikuti daftar yang dikirim pengguna; cocokkan kembali dengan PDF. Tahun, halaman, versi dan izin belum diperiksa."
+  },
+  {
+    "id": "PMP-SD-07",
+    "title": "Pendidikan Agama Buddha dan Budi Pekerti",
+    "subject": "Pendidikan Agama dan Budi Pekerti",
+    "variant": "Buddha",
+    "original_phases": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "source_url": "https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp",
+    "note": "Fase mengikuti daftar yang dikirim pengguna; cocokkan kembali dengan PDF. Tahun, halaman, versi dan izin belum diperiksa."
+  },
+  {
+    "id": "PMP-SD-08",
+    "title": "Pendidikan Agama Hindu dan Budi Pekerti",
+    "subject": "Pendidikan Agama dan Budi Pekerti",
+    "variant": "Hindu",
+    "original_phases": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "source_url": "https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp",
+    "note": "Fase mengikuti daftar yang dikirim pengguna; cocokkan kembali dengan PDF. Tahun, halaman, versi dan izin belum diperiksa."
+  },
+  {
+    "id": "PMP-SD-09",
+    "title": "Pendidikan Agama Islam dan Budi Pekerti",
+    "subject": "Pendidikan Agama dan Budi Pekerti",
+    "variant": "Islam",
+    "original_phases": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "source_url": "https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp",
+    "note": "Fase mengikuti daftar yang dikirim pengguna; cocokkan kembali dengan PDF. Tahun, halaman, versi dan izin belum diperiksa."
+  },
+  {
+    "id": "PMP-SD-10",
+    "title": "Pendidikan Agama Katolik dan Budi Pekerti",
+    "subject": "Pendidikan Agama dan Budi Pekerti",
+    "variant": "Katolik",
+    "original_phases": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "source_url": "https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp",
+    "note": "Fase mengikuti daftar yang dikirim pengguna; cocokkan kembali dengan PDF. Tahun, halaman, versi dan izin belum diperiksa."
+  },
+  {
+    "id": "PMP-SD-11",
+    "title": "Pendidikan Agama Khonghucu dan Budi Pekerti",
+    "subject": "Pendidikan Agama dan Budi Pekerti",
+    "variant": "Khonghucu",
+    "original_phases": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "source_url": "https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp",
+    "note": "Fase mengikuti daftar yang dikirim pengguna; cocokkan kembali dengan PDF. Tahun, halaman, versi dan izin belum diperiksa."
+  },
+  {
+    "id": "PMP-SD-12",
+    "title": "Pendidikan Agama Kristen dan Budi Pekerti",
+    "subject": "Pendidikan Agama dan Budi Pekerti",
+    "variant": "Kristen",
+    "original_phases": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "source_url": "https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp",
+    "note": "Fase mengikuti daftar yang dikirim pengguna; cocokkan kembali dengan PDF. Tahun, halaman, versi dan izin belum diperiksa."
+  },
+  {
+    "id": "PMP-SD-13",
+    "title": "Pendidikan Pancasila",
+    "subject": "Pendidikan Pancasila",
+    "variant": "",
+    "original_phases": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "source_url": "https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp",
+    "note": "Fase mengikuti daftar yang dikirim pengguna; cocokkan kembali dengan PDF. Tahun, halaman, versi dan izin belum diperiksa."
+  },
+  {
+    "id": "PMP-SD-14",
+    "title": "PJOK",
+    "subject": "PJOK",
+    "variant": "",
+    "original_phases": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "source_url": "https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp",
+    "note": "Fase mengikuti daftar yang dikirim pengguna; cocokkan kembali dengan PDF. Tahun, halaman, versi dan izin belum diperiksa."
+  },
+  {
+    "id": "PMP-SD-15",
+    "title": "Program Kebutuhan Khusus Pengembangan Diri dan Gerak untuk Peserta Didik Berkebutuhan Khusus Dengan Hambatan Fisik/Tunadaksa",
+    "subject": "Program Kebutuhan Khusus",
+    "variant": "Pengembangan Diri dan Gerak — Tunadaksa",
+    "original_phases": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "source_url": "https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp",
+    "note": "Konteks kebutuhan khusus; perlu peninjau pendidikan khusus. Fase mengikuti daftar yang dikirim pengguna; cocokkan kembali dengan PDF. Tahun, halaman, versi dan izin belum diperiksa."
+  },
+  {
+    "id": "PMP-SD-16",
+    "title": "Program Kebutuhan Khusus Pengembangan Orientasi, Mobilitas, Sosial, dan Komunikasi (POMSK) untuk Peserta Didik Dengan Hambatan Penglihatan/Tunanetra",
+    "subject": "Program Kebutuhan Khusus",
+    "variant": "POMSK — Tunanetra",
+    "original_phases": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "source_url": "https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp",
+    "note": "Konteks kebutuhan khusus; perlu peninjau pendidikan khusus. Fase mengikuti daftar yang dikirim pengguna; cocokkan kembali dengan PDF. Tahun, halaman, versi dan izin belum diperiksa."
+  },
+  {
+    "id": "PMP-SD-17",
+    "title": "Seni Musik",
+    "subject": "Seni",
+    "variant": "Musik",
+    "original_phases": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "source_url": "https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp",
+    "note": "Fase mengikuti daftar yang dikirim pengguna; cocokkan kembali dengan PDF. Tahun, halaman, versi dan izin belum diperiksa."
+  },
+  {
+    "id": "PMP-SD-18",
+    "title": "Seni Rupa",
+    "subject": "Seni",
+    "variant": "Rupa",
+    "original_phases": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "source_url": "https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp",
+    "note": "Fase mengikuti daftar yang dikirim pengguna; cocokkan kembali dengan PDF. Tahun, halaman, versi dan izin belum diperiksa."
+  },
+  {
+    "id": "PMP-SD-19",
+    "title": "Seni Tari",
+    "subject": "Seni",
+    "variant": "Tari",
+    "original_phases": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "source_url": "https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp",
+    "note": "Fase mengikuti daftar yang dikirim pengguna; cocokkan kembali dengan PDF. Tahun, halaman, versi dan izin belum diperiksa."
+  },
+  {
+    "id": "PMP-SD-20",
+    "title": "Seni Teater",
+    "subject": "Seni",
+    "variant": "Teater",
+    "original_phases": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+    ],
+    "source_url": "https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp",
+    "note": "Fase mengikuti daftar yang dikirim pengguna; cocokkan kembali dengan PDF. Tahun, halaman, versi dan izin belum diperiksa."
+  }
+]

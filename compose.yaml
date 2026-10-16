@@ -1,0 +1,126 @@
+name: ruangrpp
+
+x-api: &api
+  image: ruangrpp-api:local
+  build: ./services/api
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ruangrpp
+      POSTGRES_USER: ruangrpp
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Jalankan tools/setup-docker.ps1 terlebih dahulu}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U ruangrpp -d ruangrpp]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  init:
+    <<: *api
+    environment:
+      DATABASE_URL: postgresql+psycopg://ruangrpp:${POSTGRES_PASSWORD}@db:5432/ruangrpp
+    command: [python, -m, app.manage, init-db]
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    <<: *api
+    environment:
+      DATABASE_URL: postgresql+psycopg://ruangrpp:${POSTGRES_PASSWORD}@db:5432/ruangrpp
+      STORAGE_DIR: /data/uploads
+      ALLOWED_ORIGINS: http://localhost:${WEB_PORT:-3000},http://127.0.0.1:${WEB_PORT:-3000}
+      COOKIE_SECURE: "0"
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      CUSTOM_LLM_API_KEY: ${CUSTOM_LLM_API_KEY:-}
+    volumes:
+      - source_files:/data/uploads
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  worker:
+    <<: *api
+    environment:
+      DATABASE_URL: postgresql+psycopg://ruangrpp:${POSTGRES_PASSWORD}@db:5432/ruangrpp
+      STORAGE_DIR: /data/uploads
+    volumes:
+      - source_files:/data/uploads
+    command: [python, -m, app.worker]
+    depends_on:
+      init:
+        condition: service_completed_successfully
+    mem_limit: 1536m
+    pids_limit: 128
+    restart: unless-stopped
+
+  web:
+    image: ruangrpp-web:local
+    build: ./apps/web
+    environment:
+      API_URL: http://api:8000
+      HOSTNAME: 0.0.0.0
+      PORT: "3000"
+    ports:
+      - "127.0.0.1:${WEB_PORT:-3000}:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:3000').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  tests:
+    <<: *api
+    profiles: [test]
+    environment:
+      APP_TESTING: "1"
+      DATABASE_URL: sqlite:////tmp/ruangrpp-tests.db
+      STORAGE_DIR: /tmp/ruangrpp-test-uploads
+    command: [python, -m, pytest, -q, -p, no:cacheprovider]
+
+  test-db:
+    image: postgres:17-alpine
+    profiles: [test]
+    environment:
+      POSTGRES_DB: ruangrpp_test
+      POSTGRES_USER: test_runner
+      POSTGRES_PASSWORD: isolated_test_database_only
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U test_runner -d ruangrpp_test]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  tests-postgres:
+    <<: *api
+    profiles: [test]
+    environment:
+      APP_TESTING: "1"
+      DATABASE_URL: postgresql+psycopg://test_runner:isolated_test_database_only@test-db:5432/ruangrpp_test
+      STORAGE_DIR: /tmp/ruangrpp-test-uploads
+    depends_on:
+      test-db:
+        condition: service_healthy
+    command: [python, -m, pytest, -q, -p, no:cacheprovider]
+
+volumes:
+  postgres_data:
+  source_files:

@@ -94,9 +94,12 @@ Docker membantu konsistensi deployment, tetapi tidak otomatis memberi backup ata
 
 ## 8. Keputusan sebelum mulai aplikasi
 
-1. Acuan/tahun ajaran dan guru peninjau.
-2. Pilihan Qdrant versus pgvector dengan kapasitas VPS dan volume sumber awal.
-3. Penerbit identitas/auth dan mekanisme sesi antarlayanan.
-4. Anggaran bulanan, deployment VPS penuh atau Vercel + VPS, penyimpanan dan backup.
-5. Dua kandidat LLM dan satu kandidat embedding untuk benchmark; periksa API, biaya, hak penggunaan dan kebijakan data saat pemilihan.
-6. Template v1 dan daftar kombinasi uji pertama. Setelah itu implementasikan satu alur kecil: unggah satu sumber → ekstraksi → pratinjau, sebelum generator lengkap.
+Keputusan dipisah menurut waktunya agar pengumpulan sumber tidak menghalangi seluruh pekerjaan:
+
+1. Sebelum fondasi lokal tahap 3B: baseline Next.js + FastAPI + PostgreSQL, struktur proyek dan versi dependensi. Rancangan konkretnya tersedia dalam [paket tahap 3A](TAHAP_3_DESAIN_PRODUK.md).
+2. Sebelum autentikasi tahap 3C: penerbit identitas/auth dan mekanisme sesi antarlayanan.
+3. Sebelum retrieval tahap 5: acuan/tahun ajaran, hak pemrosesan sumber, pilihan Qdrant versus pgvector serta kandidat embedding dan kapasitas lingkungan.
+4. Sebelum generator tahap 6: guru peninjau, template v1, kombinasi uji dan kandidat LLM; periksa API, biaya, hak penggunaan dan kebijakan data saat pemilihan.
+5. Sebelum deployment: anggaran bulanan, VPS penuh atau Vercel + VPS, penyimpanan, backup dan region.
+
+Fondasi lokal dapat dikerjakan sebelum seluruh sumber terkumpul, dengan fitur generasi belum tersedia dan tanpa API berbayar. Setelah akun/katalog siap, implementasikan satu alur kecil: unggah satu sumber → ekstraksi → pratinjau, sebelum generator lengkap. Desain tahap 3A tidak mengunci penyedia layanan atau menyatakan prasyarat kurikulum telah terpenuhi.

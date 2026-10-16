@@ -2,7 +2,9 @@
 
 Rancang Pembelajaran, Lebih Mudah.
 
-Versi dokumen: 0.1, 11 Oktober 2026. Status: usulan untuk ditinjau pemilik produk dan guru. Tahap aktif: 1–2, perencanaan dan persiapan inventaris. Belum ada pengujian generator.
+Versi dokumen: 0.2, 11 Oktober 2026. Status: usulan untuk ditinjau pemilik produk dan guru. Tahap 1–2 masih memerlukan penguncian acuan, tinjauan guru dan pengumpulan sumber. Rancangan tahap 3A disiapkan paralel; belum ada aplikasi atau pengujian generator.
+
+Pekerjaan berikutnya dijabarkan dalam [desain tahap 3A](TAHAP_3_DESAIN_PRODUK.md), [database](TAHAP_3_DATABASE.md), dan [kontrak API](TAHAP_3_KONTRAK_API.md). Ketersediaan rancangan tidak berarti autentikasi atau tahap 3 sudah selesai diuji.
 
 ## 1. Scope yang sudah ditetapkan pengguna
 

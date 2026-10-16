@@ -1,0 +1,51 @@
+RUANGRPP — PANDUAN MATA PELAJARAN
+
+Simpan 20 calon panduan dari filter SD/MI dan Sederajat di:
+https://kurikulum.kemendikdasmen.go.id/panduan-mapel#filter-pmp
+
+Panduan Mata Pelajaran membantu penerapan CP. Kategori dashboard: Panduan_Mapel.
+Dokumen keputusan CP tetap masuk 01_CAPAIAN_PEMBELAJARAN_CP.
+Contoh modul ajar tetap masuk 02_CONTOH_MODUL_AJAR.
+
+PENAMAAN
+Panduan_Mapel_MAPEL_JENJANG_FASE_Tahun_TAHUN.pdf
+Contoh pola (bukan file yang sudah dikumpulkan):
+Panduan_Mapel_Matematika_Lintas_Jenjang_Fase_A_sampai_F_Tahun_2025.pdf
+Panduan_Mapel_IPAS_SD_Fase_B_C_Tahun_Tidak_Diketahui.pdf
+Tambahkan F_Tingkat_Lanjut jika memang tercakup dan perlu membedakan file.
+Gunakan nama agama, cabang seni, atau program khusus yang jelas.
+Tahun harus mengikuti halaman identitas dokumen, bukan tanggal unduh.
+Jika tidak tercantum gunakan Tahun_Tidak_Diketahui. Simpan nama asli di metadata.
+Jangan menambahkan Kelas_1 jika dokumen hanya menyebut Fase_A.
+
+SATU FILE, BEBERAPA CAKUPAN
+Simpan PDF asli lengkap sekali. Jangan memotong, mengubah isi, atau menyalin
+file A–F ke banyak folder fase. Catat jenjang/fase asli dan bagian SD terpisah.
+Nomor halaman PDF dihitung dari halaman pertama file, termasuk sampul;
+nomor tercetak boleh berbeda. Jangan mengarang rentang halaman.
+Hasil ekstraksi/OCR harus terpisah dari file asli.
+
+DI DASHBOARD
+Kebutuhan Sumber > Tambahkan 20 Panduan Mapel > Unggah pada target yang sesuai.
+Unggah awal cukup pilih file, judul (otomatis dari nama file), dan jenis dokumen.
+Tautan sumber opsional. Jika unggah dari target, jenis dan calon cakupan ikut
+terisi dari target. Setelah tersimpan, buka Detail > Edit untuk melengkapi
+tahun/versi, penerbit, acuan, jenjang asli, fase dan halaman pada bagian terkait.
+Periksa pilihan fase awal terhadap PDF. Jangan menebak isian yang belum diketahui.
+Batas unggah 128 MiB, PDF 2.000 halaman. File disimpan sebelum ekstraksi.
+Kosongkan halaman jika belum tahu: sistem membuat pratinjau seluruh file.
+Untuk file lintas SD–SMA, halaman SD wajib dipilih sebelum siap indeks.
+Jika gagal, periksa alasan lalu edit cakupan atau gunakan Proses ulang.
+Teks scan yang sedikit perlu ditinjau; OCR otomatis belum tersedia.
+
+PEMERIKSAAN
+Nama muncul di portal tidak berarti lisensi komersial disetujui.
+Periksa bukti izin, isi, dan kualitas teks secara terpisah.
+Program kebutuhan khusus memerlukan peninjau sesuai keahlian.
+Koding/KA perlu konfirmasi penerapan sekolah. Muatan lokal tetap dikumpulkan
+terpisah meskipun tidak termasuk daftar 20 ini.
+Semua sumber belum aktif di RAG. Qdrant/embedding belum dijalankan.
+
+Daftar_Target_Panduan_Mapel_SD.xlsx di 05_INVENTARIS_METADATA adalah daftar
+calon pengumpulan, bukan inventaris file yang sudah ada. Hubungkan ID file
+asli setelah diperoleh. Dashboard dan Excel belum tersinkron otomatis.

@@ -4,3 +4,11 @@ tools/perencanaan/qa/
 .env.*
 !.env.example
 RUANGRPP_PROCESSED/
+.npm-cache/
+.next/
+.venv/
+__pycache__/
+.pytest_cache/
+*.tsbuildinfo
+var/
+test-results/

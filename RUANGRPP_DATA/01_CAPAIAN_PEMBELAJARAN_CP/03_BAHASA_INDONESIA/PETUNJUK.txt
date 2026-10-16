@@ -9,6 +9,10 @@ Catat fase/kelas dan topik sesuai isi. Jangan membagi CP ke semester atau kelas 
 PANDUAN PENAMAAN FILE
 Pola dokumen sumber:
 KATEGORI_MAPEL_JENJANG_CAKUPAN_TOPIK_Tahun_TERBIT.ext
+CONTOH:
+- CP_Bahasa_Indonesia_SD_Fase_A_Tahun_2025.pdf 
+- Modul_Ajar_Bahasa_Indonesia_Kelas_1_Tahun_2025.pdf
+- Panduan_Guru_Bahasa_Indonesia_Kelas_1_Tahun_2025.pdf
 
 Arti setiap bagian:
 - KATEGORI: CP, Modul_Ajar, Panduan_Guru, Buku, atau kategori sesuai isi.
