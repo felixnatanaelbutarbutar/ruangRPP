@@ -31,6 +31,37 @@ SUGGESTED_MODELS = {
 }
 
 
+SUGGESTED_EMBEDDING_MODELS = {
+    'openai': [
+        {'id': 'text-embedding-3-small', 'label': 'text-embedding-3-small', 'dimensions': 1536, 'desc': 'Rekomendasi (1536 dim · Hemat & Cepat)'},
+        {'id': 'text-embedding-3-large', 'label': 'text-embedding-3-large', 'dimensions': 3072, 'desc': 'Akurasi tinggi (3072 dim)'},
+        {'id': 'text-embedding-ada-002', 'label': 'text-embedding-ada-002', 'dimensions': 1536, 'desc': 'Model generasi sebelumnya (1536 dim)'},
+    ]
+}
+
+
+def test_embedding_connection(provider: str, model: str = ''):
+    if provider == 'openai':
+        key = os.getenv('OPENAI_API_KEY', '').strip()
+        if not key:
+            return {'status': 'no_key', 'ok': False, 'message': 'Kunci OPENAI_API_KEY belum dikonfigurasi di server (.env).'}
+        try:
+            test_model = model or 'text-embedding-3-small'
+            payload = {'model': test_model, 'input': 'Uji coba embedding kurikulum merdeka'}
+            rc = httpx.post('https://api.openai.com/v1/embeddings', json=payload,
+                            headers={'Authorization': f'Bearer {key}', 'Content-Type': 'application/json'}, timeout=8.0)
+            if rc.status_code == 200:
+                data = rc.json()
+                dim = len(data['data'][0]['embedding']) if data.get('data') else 1536
+                return {'status': 'connected', 'ok': True, 'message': f'Embedding aktif! Vektor {dim} dimensi berhasil dibuat.', 'dimensions': dim}
+            elif rc.status_code == 429:
+                return {'status': 'quota_exhausted', 'ok': False, 'message': 'API Key valid, namun saldo kredit $0. Harap top-up di billing OpenAI.'}
+            return {'status': 'warning', 'ok': False, 'message': f'Server merespons status {rc.status_code}.'}
+        except Exception as e:
+            return {'status': 'error', 'ok': False, 'message': f'Gagal menghubungi OpenAI Embedding: {str(e)}'}
+    return {'status': 'unsupported', 'ok': False, 'message': f'Penyedia {provider} belum mendukung uji embedding otomatis.'}
+
+
 def test_provider_connection(provider: str, model: str = ''):
     if provider == 'openai':
         key = os.getenv('OPENAI_API_KEY', '').strip()
@@ -72,6 +103,13 @@ class ProfileInput(BaseModel):
     model_config = ConfigDict(extra='forbid', str_strip_whitespace=True)
     provider: Literal['openai', 'deepseek', 'other']
     model: str = Field(min_length=1, max_length=150, pattern=r'^[A-Za-z0-9][A-Za-z0-9._:/-]*$')
+
+
+class EmbeddingInput(BaseModel):
+    model_config = ConfigDict(extra='forbid', str_strip_whitespace=True)
+    provider: Literal['openai', 'other']
+    model: str = Field(min_length=1, max_length=150, pattern=r'^[A-Za-z0-9][A-Za-z0-9._:/-]*$')
+
 
 
 def build_admin_router(admin, audit):
@@ -129,13 +167,50 @@ def build_admin_router(admin, audit):
     def models():
         with Session() as db:
             default = db.get(AdminSetting, 'default_model')
+            embed_model = db.get(AdminSetting, 'default_embedding_model')
+            embed_prov = db.get(AdminSetting, 'default_embedding_provider')
+            embedding_info = {
+                'provider': embed_prov.value if embed_prov and embed_prov.value else 'openai',
+                'model': embed_model.value if embed_model and embed_model.value else 'text-embedding-3-small',
+                'suggested': SUGGESTED_EMBEDDING_MODELS,
+            }
             return {'items': [{'id': p.id, 'provider': p.provider, 'model': p.model,
                                'updated_at': p.updated_at.isoformat(), 'connection_status': 'not_tested'}
                               for p in db.scalars(select(ModelProfile).order_by(ModelProfile.updated_at.desc()))],
                     'default_id': default.value if default else None, 'generation_available': False,
                     'suggested_models': SUGGESTED_MODELS,
+                    'embedding': embedding_info,
                     'providers': [{'id': key, 'label': label, 'credential_configured': bool(os.getenv(env))}
                                   for key, (label, env) in PROVIDERS.items()]}
+
+    @router.put('/embedding/default')
+    def set_default_embedding(body: EmbeddingInput, user=Depends(admin)):
+        with Session() as db:
+            setting_model = db.get(AdminSetting, 'default_embedding_model')
+            if not setting_model:
+                setting_model = AdminSetting(key='default_embedding_model', value=body.model)
+                db.add(setting_model)
+            else:
+                setting_model.value = body.model
+
+            setting_prov = db.get(AdminSetting, 'default_embedding_provider')
+            if not setting_prov:
+                setting_prov = AdminSetting(key='default_embedding_provider', value=body.provider)
+                db.add(setting_prov)
+            else:
+                setting_prov.value = body.provider
+
+            audit(db, user, f'Memilih default embedding: {body.provider} / {body.model}')
+            db.commit()
+            return {'provider': body.provider, 'model': body.model}
+
+    @router.post('/embedding/test')
+    def test_embedding(body: EmbeddingInput, user=Depends(admin)):
+        res = test_embedding_connection(body.provider, body.model)
+        with Session() as db:
+            audit(db, user, f'Uji koneksi embedding {body.provider}/{body.model}: {res["status"]}')
+            db.commit()
+        return res
 
     @router.post('/models/{profile_id}/test')
     def test_model(profile_id: str, user=Depends(admin)):
@@ -147,6 +222,7 @@ def build_admin_router(admin, audit):
             audit(db, user, f'Uji koneksi LLM {p.provider}/{p.model}: {result["status"]}')
             db.commit()
             return result
+
 
 
     @router.post('/models', status_code=201)

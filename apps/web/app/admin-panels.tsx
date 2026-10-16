@@ -7,10 +7,16 @@ type Event = { id: string; actor: string; actor_id: string | null; actor_kind: s
 type Teacher = { id: string; name: string; email: string; created_at: string; last_login: string };
 type Profile = { id: string; provider: string; model: string };
 type ModelSuggestion = { id: string; label: string; desc: string };
+type EmbeddingInfo = {
+  provider: string;
+  model: string;
+  suggested?: Record<string, { id: string; label: string; dimensions?: number; desc: string }[]>;
+};
 type ModelData = {
   items: Profile[];
   default_id: string | null;
   suggested_models?: Record<string, ModelSuggestion[]>;
+  embedding?: EmbeddingInfo;
   providers: { id: string; label: string; credential_configured: boolean }[];
 };
 export type AdminView = 'models' | 'users' | 'activity' | 'finance';
@@ -56,14 +62,27 @@ export function AdminPanels({ view, api, openDocument }: { view: AdminView; api:
   const [revision, setRevision] = useState(0);
   const [testingId, setTestingId] = useState<string | null>(null);
   const [testResults, setTestResults] = useState<Record<string, { status: string; ok: boolean; message: string }>>({});
+  const [embedModel, setEmbedModel] = useState('text-embedding-3-small');
+  const [embedProvider, setEmbedProvider] = useState('openai');
+  const [embedTesting, setEmbedTesting] = useState(false);
+  const [embedResult, setEmbedResult] = useState<{ status: string; ok: boolean; message: string; dimensions?: number } | null>(null);
+  const [savingEmbed, setSavingEmbed] = useState(false);
 
   useEffect(() => {
     let current = true;
     setLoading(true); setError('');
     async function load() {
       if (view === 'models') {
-        const data = await api('/admin/models'); if (current) setModels(data);
+        const data = await api('/admin/models');
+        if (current) {
+          setModels(data);
+          if (data?.embedding) {
+            setEmbedModel(data.embedding.model || 'text-embedding-3-small');
+            setEmbedProvider(data.embedding.provider || 'openai');
+          }
+        }
       } else if (view === 'finance') {
+
         const data = await api('/admin/finance'); if (current) setFinance(data);
       } else {
         const accounts = await api('/admin/users'); if (current) setUsers(accounts.items);
@@ -223,8 +242,127 @@ export function AdminPanels({ view, api, openDocument }: { view: AdminView; api:
           </tr>;
         })}</tbody></table></div> : <div className="empty"><h3>Belum ada model tersimpan</h3><p>Tambahkan penyedia dan ID model yang ingin digunakan. Profil dapat diganti sebelum generator dihubungkan.</p></div>}
       </section>
+
+      <section className="panel">
+        <div className="panel-head">
+          <div>
+            <h2>Model embedding (Vektor & RAG)</h2>
+            <p>Model untuk mengubah teks dokumen kurikulum menjadi vektor semantik pencarian acuan resmi.</p>
+          </div>
+          <span className="badge">Pencarian Acuan</span>
+        </div>
+        <div className="settings-form" style={{ borderBottom: 0 }}>
+          <div className="form-grid">
+            <label>Penyedia
+              <select value={embedProvider} onChange={e => setEmbedProvider(e.target.value)} disabled={savingEmbed || embedTesting}>
+                <option value="openai">OpenAI (Hemat & Standar Industri)</option>
+                <option value="other">Penyedia Lain</option>
+              </select>
+            </label>
+            <label>ID model embedding
+              <input
+                required
+                maxLength={150}
+                list="suggested-embeddings-list"
+                value={embedModel}
+                disabled={savingEmbed || embedTesting}
+                onChange={e => setEmbedModel(e.target.value)}
+                placeholder="Klik untuk pilih dropdown model"
+              />
+              <datalist id="suggested-embeddings-list">
+                <option value="text-embedding-3-small">text-embedding-3-small — Rekomendasi (1536 dim · Hemat & Cepat)</option>
+                <option value="text-embedding-3-large">text-embedding-3-large — Akurasi tinggi (3072 dim)</option>
+                <option value="text-embedding-ada-002">text-embedding-ada-002 — Versi klasik (1536 dim)</option>
+              </datalist>
+            </label>
+          </div>
+
+          <div>
+            <span style={{ fontSize: 12, color: 'var(--text-muted)', display: 'block', marginBottom: 6 }}>
+              Pilihan cepat model embedding (klik untuk memilih langsung):
+            </span>
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {[
+                { id: 'text-embedding-3-small', label: 'text-embedding-3-small', desc: 'Rekomendasi (1536 dim)' },
+                { id: 'text-embedding-3-large', label: 'text-embedding-3-large', desc: 'Akurasi tinggi (3072 dim)' },
+                { id: 'text-embedding-ada-002', label: 'text-embedding-ada-002', desc: 'Versi klasik' },
+              ].map(em => (
+                <button
+                  type="button"
+                  key={em.id}
+                  onClick={() => setEmbedModel(em.id)}
+                  style={{
+                    background: embedModel === em.id ? 'var(--navy-rpp)' : '#f0f3f3',
+                    color: embedModel === em.id ? '#ffffff' : 'var(--navy-rpp)',
+                    border: embedModel === em.id ? '1px solid var(--navy-rpp)' : '1px solid var(--garis)',
+                    borderRadius: 6,
+                    padding: '4px 10px',
+                    fontSize: 12,
+                    cursor: 'pointer',
+                    fontWeight: embedModel === em.id ? 700 : 500,
+                  }}
+                  title={em.desc}
+                >
+                  + {em.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {embedResult && (
+            <div style={{ marginTop: 8, fontSize: 13, padding: '10px 14px', borderRadius: 6, background: embedResult.ok ? 'var(--mint-tipis)' : '#fef3f2', border: embedResult.ok ? '1px solid var(--teal-ruang)' : '1px solid var(--error)' }}>
+              <strong style={{ color: embedResult.ok ? 'var(--teal-dalam)' : 'var(--error)' }}>
+                {embedResult.ok ? '✓ Uji Berhasil' : embedResult.status === 'quota_exhausted' ? '⚠ Saldo $0' : '✕ Gagal'}
+              </strong>
+              <span style={{ display: 'block', color: 'var(--navy-rpp)', marginTop: 2 }}>{embedResult.message}</span>
+            </div>
+          )}
+
+          <div className="button-group">
+            <button
+              type="button"
+              className="primary"
+              disabled={savingEmbed || embedTesting}
+              onClick={async () => {
+                setSavingEmbed(true);
+                try {
+                  await api('/admin/embedding/default', { method: 'PUT', body: JSON.stringify({ provider: embedProvider, model: embedModel.trim() }) });
+                  setMessage('Model embedding default berhasil disimpan.');
+                } catch (e) {
+                  setError((e as Error).message);
+                } finally {
+                  setSavingEmbed(false);
+                }
+              }}
+            >
+              {savingEmbed ? 'Menyimpan...' : 'Jadikan Default Embedding'}
+            </button>
+            <button
+              type="button"
+              className="secondary"
+              disabled={savingEmbed || embedTesting}
+              onClick={async () => {
+                setEmbedTesting(true);
+                setEmbedResult(null);
+                try {
+                  const res = await api('/admin/embedding/test', { method: 'POST', body: JSON.stringify({ provider: embedProvider, model: embedModel.trim() }) });
+                  setEmbedResult(res);
+                } catch (e) {
+                  setEmbedResult({ status: 'error', ok: false, message: (e as Error).message });
+                } finally {
+                  setEmbedTesting(false);
+                }
+              }}
+            >
+              {embedTesting ? 'Menguji...' : 'Uji Embedding'}
+            </button>
+          </div>
+        </div>
+      </section>
+
       <section className="panel"><div className="panel-head"><div><h2>Kredensial penyedia</h2><p>Kunci API dikelola melalui konfigurasi server Docker.</p></div></div><div className="status-list">{models.providers.map(p => <div key={p.id}><strong>{p.label}</strong><span>{p.credential_configured ? 'Kunci tersedia di server' : 'Kunci belum dikonfigurasi'}</span></div>)}</div><div className="table-foot">Kunci API tidak dikirim ke browser. Penyedia lain masih memerlukan adapter pada tahap generator.</div></section>
     </>}
+
 
 
     {view === 'users' && <>
