@@ -5,6 +5,8 @@ export type Plan = {
   name: string;
   price: string;
   period: string;
+  quota: string;
+  unitPrice: string;
   priceNumber: number;
   desc: string;
   features: string[];
@@ -79,53 +81,60 @@ const SAMPLE_MODULES: Record<string, SampleModule> = {
   },
 };
 
-// Maksimal 3 paket (§5.6)
+// Skema Harga Berbasis Kuota Per-Generate (§5.6)
 const PLANS: Plan[] = [
   {
     id: 'trial',
     name: 'Paket Uji Coba',
     price: 'Rp 0',
-    period: 'gratis 3 hari',
+    period: 'sekali pakai · langsung aktif',
+    quota: '3x Generate Draf',
+    unitPrice: 'Gratis',
     priceNumber: 0,
-    desc: 'Untuk mengenal dan menguji kualitas draf modul ajar terstruktur ruangRPP.',
+    desc: 'Untuk menguji langsung kualitas draf modul ajar terstruktur ruangRPP.',
     features: [
-      '3 Draf Modul Ajar Lengkap',
-      'Akses Fase A, B, dan C',
+      '3 Kuota Generate Draf RPP Lengkap',
+      'Akses Seluruh Fase (A, B, C / Kelas 1–6 SD)',
       'Pratinjau struktur modul terstandar',
-      'Ekspor Word (.docx) & PDF',
+      'Ekspor format Word (.docx) & PDF',
+      'Tanpa batas waktu (kuota tidak hangus)',
     ],
+  },
+  {
+    id: 'mandiri',
+    name: 'Guru Mandiri',
+    price: 'Rp 25.000',
+    period: 'sekali bayar · kuota permanen',
+    quota: '15x Generate Draf',
+    unitPrice: 'Rp 1.660 / draf',
+    priceNumber: 25000,
+    desc: 'Paling pas untuk persiapan 1 semester satu mata pelajaran tertentu.',
+    features: [
+      '15 Kuota Generate Draf RPP',
+      'Hanya Rp 1.660 per draf modul',
+      'Kuota aktif permanen (tanpa tanggal kedaluwarsa)',
+      'Ekspor Word (.docx) & PDF siap cetak',
+      'Instrumen asesmen & rubrik terlampir',
+      'Arsip draf tersimpan selamanya di akun',
+    ],
+    recommended: true, // Rekomendasi dengan border teal 2px (§5.6)
   },
   {
     id: 'semester',
-    name: 'Guru Profesional',
-    price: 'Rp 79.000',
-    period: 'per semester (6 bulan)',
-    priceNumber: 79000,
-    desc: 'Akses tanpa batas untuk 1 semester penuh bagi guru wali kelas maupun mapel.',
+    name: 'Paket Semester Penuh',
+    price: 'Rp 65.000',
+    period: 'sekali bayar · kuota permanen',
+    quota: '50x Generate Draf',
+    unitPrice: 'Rp 1.300 / draf',
+    priceNumber: 65000,
+    desc: 'Pilihan hemat untuk guru wali kelas yang mengampu banyak mata pelajaran.',
     features: [
-      'Draf Modul Ajar Tanpa Batas',
-      'Seluruh Kelas 1–6 SD',
-      'Ekspor dokumen siap cetak & telaah',
-      'Instrumen asesmen & rubrik terlampir',
-      'Pembaruan regulasi otomatis',
-      'Arsip tetap tersimpan saat kuota habis',
-    ],
-    recommended: true, // Ditandai dengan border teal 2px (§5.6)
-  },
-  {
-    id: 'sekolah',
-    name: 'Satuan Pendidikan & KKG',
-    price: 'Rp 249.000',
-    period: 'per tahun ajaran',
-    priceNumber: 249000,
-    desc: 'Lisensi multi-guru untuk sekolah dasar, gugus, atau kelompok kerja guru.',
-    features: [
-      'Hingga 10 Akun Guru Terdaftar',
-      'Akses tak terbatas selama 1 tahun',
-      'Standarisasi perangkat ajar sekolah',
-      'Kop surat resmi satuan pendidikan',
-      'Faktur pajak / invoice resmi instansi',
-      'Pendampingan orientasi guru via online',
+      '50 Kuota Generate Draf RPP',
+      'Tarif paling hemat (Rp 1.300 per draf)',
+      'Bebas digunakan untuk semua kelas & mapel',
+      'Ekspor dokumen resmi siap telaah pengawas',
+      'Panduan diferensiasi belajar lengkap',
+      'Dukungan prioritas pembaruan kurikulum',
     ],
   },
 ];
@@ -144,16 +153,16 @@ const FAQS = [
     a: 'Anda dapat mengunduh dokumen dalam format Microsoft Word (.DOCX) dan PDF. Tata letak dan penomoran telah disesuaikan dengan format standar dinas pendidikan agar siap dicetak atau ditelaah kepala sekolah.',
   },
   {
-    q: 'Apakah data kelas saya disimpan?',
-    a: 'Ya, draf yang telah Anda buat tersimpan dengan aman di akun Anda. Anda dapat membuka kembali, menggandakan untuk kelas paralel, atau memperbaruinya di tahun ajaran berikutnya tanpa harus mengetik ulang.',
+    q: 'Apakah data kelas dan kuota saya disimpan?',
+    a: 'Ya. Draf yang telah Anda buat dan sisa kuota generate tersimpan aman di akun Anda. Kuota tidak memiliki tanggal kedaluwarsa sehingga tidak akan hangus bila belum sempat dipakai.',
   },
   {
-    q: 'Apa saya masih perlu memeriksa hasilnya?',
-    a: 'Ya, Anda sangat disarankan memeriksa hasilnya. AI di ruangRPP berfungsi merangkai draf awal agar Bapak/Ibu tidak memulai dari kertas kosong. Namun, penyesuaian terhadap karakteristik dan kebutuhan unik murid di kelas tetap membutuhkan kebijaksanaan guru.',
+    q: 'Bagaimana sistem hitungan biaya per-generate?',
+    a: 'Biaya dihitung per-generate (per draf), bukan langganan bulanan. Anda membeli paket kuota (mulai Rp 1.300 – Rp 1.660 per draf) dan kuota berkurang 1 setiap kali Anda menyusun draf modul ajar baru. Anda tidak perlu khawatir membayar biaya berulang saat masa libur sekolah.',
   },
   {
-    q: 'Berapa biayanya dan apa yang terjadi kalau kuota habis?',
-    a: 'Tersedia Paket Uji Coba Gratis untuk mencoba. Untuk penggunaan penuh, Paket Guru Profesional Rp 79.000/semester memberikan akses tanpa batas. Saat masa paket berakhir, seluruh dokumen yang telah dibuat tetap tersimpan permanen di arsip akun Anda dan dapat diunduh kapan saja.',
+    q: 'Apakah saat ini pembayaran sudah memotong uang riil?',
+    a: 'Belum. Saat ini platform ruangRPP berada dalam fase staging & development (uji coba sistem). Gerbang pembayaran Midtrans berjalan dalam mode Sandbox (simulasi dummy), sehingga Anda dapat menguji seluruh proses checkout dan aktivasi kuota secara gratis tanpa pemotongan saldo asli.',
   },
 ];
 
@@ -187,7 +196,6 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
     if (timerRef.current) clearTimeout(timerRef.current);
     setActiveTab(tabKey);
 
-    // If reduced motion is preferred, jump straight to completed state
     if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setDemoStep(3);
       setIsGenerating(false);
@@ -208,7 +216,6 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
   };
 
   useEffect(() => {
-    // Only run animation on desktop if motion is not reduced (§7)
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const isDesktop = window.innerWidth >= 1024;
 
@@ -626,13 +633,25 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
         </div>
       </section>
 
-      {/* ── 6. PAKET & BIAYA (§5.6: Maksimal 3 Paket Sejajar) ── */}
+      {/* ── 6. PAKET & BIAYA (§5.6: Per-Generate Kuota Draf + Keterangan Staging Dummy) ── */}
       <section className="lp-section" id="harga">
         <div className="lp-container">
-          <h2 className="lp-h2">Pilihan paket berlangganan</h2>
+          <h2 className="lp-h2">Pilihan kuota draf RPP</h2>
           <p className="lp-body">
-            Pilih paket yang sesuai dengan kebutuhan persiapan mengajar Anda. Pembayaran instan otomatis via Midtrans.
+            Sistem bayar per-generate yang fleksibel. Kuota berlaku permanen tanpa tanggal kedaluwarsa dan dokumen bebas diedit.
           </p>
+
+          {/* Banner Pemberitahuan Fase Staging / Sandbox Dummy */}
+          <div className="lp-staging-notice">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, color: 'var(--teal-dalam)' }}>
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+            <div>
+              <strong>Fase Staging &amp; Pengembangan:</strong> Sistem pembayaran saat ini berjalan dalam mode <em>Sandbox / Simulasi Dummy</em>. Bapak/Ibu dapat memilih paket dan mencoba alur aktivasi kuota secara langsung tanpa pemotongan biaya riil.
+            </div>
+          </div>
 
           <div className="lp-pricing-grid">
             {PLANS.map((plan) => (
@@ -641,9 +660,14 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                 className={`lp-price-card ${plan.recommended ? 'recommended' : ''}`}
               >
                 <div>
-                  <h3 className="lp-price-name">{plan.name}</h3>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                    <h3 className="lp-price-name" style={{ margin: 0 }}>{plan.name}</h3>
+                    <span className="lp-quota-chip">{plan.quota}</span>
+                  </div>
                   <div className="lp-price-val">{plan.price}</div>
-                  <div className="lp-price-period">{plan.period}</div>
+                  <div className="lp-price-period">
+                    {plan.period} &bull; <strong style={{ color: 'var(--teal-dalam)' }}>{plan.unitPrice}</strong>
+                  </div>
                   <p className="lp-small" style={{ marginBottom: 20 }}>
                     {plan.desc}
                   </p>
@@ -666,14 +690,14 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                   style={{ width: '100%', height: 44, fontSize: 15 }}
                   onClick={() => handleOpenCheckout(plan)}
                 >
-                  {plan.priceNumber === 0 ? 'Mulai uji coba' : 'Pilih paket'}
+                  {plan.priceNumber === 0 ? 'Mulai Uji Coba Gratis' : `Simulasi Beli (${plan.quota})`}
                 </button>
               </div>
             ))}
           </div>
 
           <p className="lp-small" style={{ marginTop: 24, textAlign: 'center', color: 'var(--abu-tinta)' }}>
-            Seluruh paket memungkinkan ekspor dokumen ke Microsoft Word (.docx) dan PDF. Saat periode berakhir, dokumen yang sudah dibuat tetap tersimpan permanen di arsip Anda.
+            Setiap 1 kuota generate menghasilkan 1 draf Modul Ajar/RPP lengkap beserta rujukan Capaian Pembelajaran dan asesmen. Dokumen yang telah dibuat tersimpan permanen di akun Anda.
           </p>
         </div>
       </section>
@@ -792,7 +816,6 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                   </button>
                 </li>
                 <li>
-                  {/* Link Masuk Pengelola dipindah ke footer (§5.1 & §5.8) */}
                   <button type="button" onClick={onOpenLogin} style={{ color: 'var(--teal-ruang)', fontWeight: 600 }}>
                     Masuk tim pengelola
                   </button>
@@ -807,13 +830,13 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
         </div>
       </footer>
 
-      {/* ── MODAL: SIMULATOR MIDTRANS PAYMENT ── */}
+      {/* ── MODAL: SIMULATOR MIDTRANS PAYMENT (DUMMY SANDBOX) ── */}
       {selectedPlan && (
         <div className="lp-modal-overlay" onClick={() => setSelectedPlan(null)}>
           <div className="lp-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="lp-modal-header">
               <h3 className="lp-modal-title">
-                {checkoutStep === 'success' ? 'Pembayaran Berhasil' : `Langganan: ${selectedPlan.name}`}
+                {checkoutStep === 'success' ? 'Simulasi Berhasil' : `Pilih Kuota: ${selectedPlan.name}`}
               </h3>
               <button
                 type="button"
@@ -827,12 +850,25 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
 
             {checkoutStep === 'form' && (
               <form onSubmit={handleProcessPayment}>
+                {/* Banner Sandbox Dummy */}
+                <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', padding: '10px 14px', borderRadius: 8, marginBottom: 16, fontSize: 13, color: '#92400E', display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                  <span style={{ fontSize: 16, flexShrink: 0 }}>🧪</span>
+                  <div>
+                    <strong>Mode Sandbox (Simulasi Dummy):</strong> Ini adalah lingkungan pengujian staging. Tidak ada pemotongan saldo atau biaya riil yang terjadi.
+                  </div>
+                </div>
+
                 <div style={{ background: 'var(--mint-tipis)', padding: '12px 16px', borderRadius: 10, marginBottom: 18, border: '1px solid var(--garis)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <strong style={{ color: 'var(--navy-rpp)' }}>{selectedPlan.name}</strong>
-                    <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--teal-dalam)' }}>{selectedPlan.price}</span>
+                    <div>
+                      <strong style={{ color: 'var(--navy-rpp)', fontSize: 16 }}>{selectedPlan.name}</strong>
+                      <div style={{ fontSize: 13, color: 'var(--teal-dalam)', fontWeight: 700 }}>
+                        {selectedPlan.quota} ({selectedPlan.unitPrice})
+                      </div>
+                    </div>
+                    <span style={{ fontSize: 20, fontWeight: 800, color: 'var(--navy-rpp)' }}>{selectedPlan.price}</span>
                   </div>
-                  <div style={{ fontSize: 13, color: 'var(--abu-tinta)' }}>{selectedPlan.period}</div>
+                  <div style={{ fontSize: 12.5, color: 'var(--abu-tinta)', marginTop: 4 }}>{selectedPlan.period}</div>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 12 }}>
@@ -883,7 +919,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                 {selectedPlan.priceNumber > 0 && (
                   <div style={{ marginBottom: 20 }}>
                     <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy-rpp)', display: 'block', marginBottom: 8 }}>
-                      Metode Pembayaran (Midtrans)
+                      Pilih Kanal Pembayaran Dummy (Midtrans Simulator)
                     </label>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
                       <button
@@ -891,7 +927,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                         className={`lp-hero-tab ${paymentMethod === 'qris' ? 'active' : ''}`}
                         onClick={() => setPaymentMethod('qris')}
                       >
-                        QRIS
+                        QRIS Dummy
                       </button>
                       <button
                         type="button"
@@ -916,7 +952,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                   className="lp-btn-primary"
                   style={{ width: '100%', height: 46 }}
                 >
-                  {selectedPlan.priceNumber === 0 ? 'Aktifkan Akun Gratis' : `Bayar Sekarang (${selectedPlan.price})`}
+                  {selectedPlan.priceNumber === 0 ? 'Aktifkan Kuota Uji Coba Gratis' : `Simulasikan Pembayaran Dummy (${selectedPlan.price})`}
                 </button>
               </form>
             )}
@@ -924,9 +960,9 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
             {checkoutStep === 'processing' && (
               <div style={{ textAlign: 'center', padding: '36px 0' }}>
                 <p style={{ fontWeight: 600, color: 'var(--navy-rpp)', marginBottom: 8 }}>
-                  Menghubungkan ke Gerbang Pembayaran Midtrans...
+                  Memproses Simulasi Gateway Pembayaran Midtrans...
                 </p>
-                <p className="lp-small">Mohon tunggu sebentar.</p>
+                <p className="lp-small">Sedang menyambungkan ke Sandbox environment.</p>
               </div>
             )}
 
@@ -938,17 +974,20 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                   </svg>
                 </div>
                 <h4 style={{ fontSize: 20, color: 'var(--navy-rpp)', margin: '0 0 8px 0' }}>
-                  Aktivasi Paket Berhasil!
+                  Simulasi Aktivasi Berhasil!
                 </h4>
+                <div style={{ display: 'inline-block', background: 'var(--mint-tipis)', color: 'var(--teal-dalam)', padding: '6px 14px', borderRadius: 12, fontSize: 13.5, fontWeight: 700, marginBottom: 14 }}>
+                  +{selectedPlan.quota} Telah Ditambahkan ke Akun (Mode Uji Coba)
+                </div>
                 <p className="lp-body" style={{ margin: '0 auto 20px', maxWidth: 420 }}>
-                  Terima kasih, Bapak/Ibu {customer.name || 'Guru'}. Akun dan kuota draf Anda telah aktif. Detail akses telah dikirimkan ke email Anda.
+                  Terima kasih, Bapak/Ibu {customer.name || 'Guru'}. Selama fase staging ini, kuota draf Anda telah aktif secara simulasi untuk pengujian draf modul ajar.
                 </p>
                 <button
                   type="button"
                   className="lp-btn-primary"
                   onClick={() => setSelectedPlan(null)}
                 >
-                  Mulai Gunakan ruangRPP
+                  Mulai Gunakan Kuota Generate
                 </button>
               </div>
             )}

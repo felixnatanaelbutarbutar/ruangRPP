@@ -1297,3 +1297,32 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
   color: var(--abu-tinta);
   cursor: pointer;
 }
+
+/* Staging Notice & Quota Chips (§5.6) */
+.lp-staging-notice {
+  background: var(--mint-tipis);
+  border: 1px solid var(--garis);
+  border-left: 4px solid var(--teal-ruang);
+  border-radius: var(--r-input);
+  padding: 14px 18px;
+  margin-top: var(--s4);
+  margin-bottom: var(--s5);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14.5px;
+  color: var(--navy-rpp);
+  line-height: 1.5;
+  text-align: left;
+}
+
+.lp-quota-chip {
+  background: var(--mint-tipis);
+  color: var(--teal-dalam);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--r-chip);
+  border: 1px solid var(--garis);
+  white-space: nowrap;
+}
