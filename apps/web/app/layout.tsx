@@ -1,11 +1,19 @@
 import type { Metadata } from 'next';
-import { Plus_Jakarta_Sans } from 'next/font/google';
+import { Nunito, Source_Serif_4 } from 'next/font/google';
 import './globals.css';
 
-const font = Plus_Jakarta_Sans({
+const nunito = Nunito({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
-  variable: '--font-sans',
+  weight: ['400', '500', '700', '800'],
+  variable: '--font-ui',
+  display: 'swap',
+});
+
+const sourceSerif = Source_Serif_4({
+  subsets: ['latin'],
+  weight: ['400', '600'],
+  variable: '--font-doc',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -20,8 +28,8 @@ export const metadata: Metadata = {
 
 export default function Layout({ children }: Readonly<{children: React.ReactNode}>) {
   return (
-    <html lang="id" className={font.variable}>
-      <body className={font.className}>{children}</body>
+    <html lang="id" className={`${nunito.variable} ${sourceSerif.variable}`}>
+      <body className={nunito.className}>{children}</body>
     </html>
   );
 }
