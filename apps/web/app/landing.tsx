@@ -16,7 +16,7 @@ type Plan = {
 const SAMPLE_MODULES = [
   {
     id: 'ipas',
-    title: 'Fotosintesis: Dapur Ajaib Tumbuhan',
+    title: 'Fotosintesis: Proses Terpenting bagi Kehidupan di Bumi',
     subject: 'IPAS (Ilmu Pengetahuan Alam & Sosial)',
     phase: 'Fase B · Kelas 4 SD',
     duration: '2 Pertemuan (4 JP x 35 Menit)',
@@ -61,7 +61,7 @@ const SAMPLE_MODULES = [
     activities: [
       { time: '15m', type: 'Pembuka', desc: 'Menyimak rekaman suara gemercik hujan dan menceritakan pengalaman banjir/hujan deras.' },
       { time: '45m', type: 'Inti (Struktur Teks)', desc: 'Menyusun kerangka teks sebab-akibat (evaporasi, kondensasi, presipitasi) dengan peta pikiran.' },
-      { time: '10m', type: 'Penutup', desc: 'Saling membaca draf kalimat pertama dengan teman sebangku (*peer feedback*).' },
+      { time: '10m', type: 'Penutup', desc: 'Saling membaca draf kalimat pertama dengan teman sebangku (peer feedback).' },
     ],
     assessment: 'Rubrik penulisan: Struktur pembuka, deretan penjelas, ketepatan konjungsi kausalitas.',
   },
@@ -198,17 +198,15 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
       <header className="site-header">
         <div className="header-inner">
           <div className="brand-group">
-            <span className="brand-symbol">R</span>
-            <div className="brand-text">
-              <span className="brand-main">Ruang<strong>RPP</strong></span>
-              <span className="brand-caption">Platform Perangkat Ajar SD</span>
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo-ruangRPP-transparent.png" alt="RuangRPP" height={34} className="brand-logo-img" />
+            <span className="brand-caption-tag">Perangkat Ajar SD</span>
           </div>
 
           <nav className="header-nav">
             <a href="#studio">Studio Modul</a>
             <a href="#keunggulan">Prinsip &amp; Mutu</a>
-            <a href="#alur">Alur Guru</a>
+            <a href="#alur">Alur Kerja</a>
             <a href="#harga">Paket &amp; Harga</a>
             <a href="#faq">Tanya Jawab</a>
           </nav>
@@ -222,7 +220,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
             >
               Masuk Tim Pengelola
             </button>
-            <a href="#harga" className="btn-primary-glow">
+            <a href="#harga" className="btn-primary-teal">
               Pilih Paket &rarr;
             </a>
           </div>
@@ -230,22 +228,23 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
       </header>
 
       {/* ── HERO SECTION ── */}
-      <section className="hero-section-v2">
-        <div className="hero-glow-blob" />
+      <section className="hero-section-clean">
         <div className="hero-container">
           <div className="hero-badge-pill">
-            <span className="pill-pulse" />
-            <span className="pill-text">Sesuai Capaian Pembelajaran Resmi Kemendikdasmen No. 046/H/KR/2025</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0fa895" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span>Standar Kurikulum Nasional SD · Capaian Pembelajaran BSKAP 046/2025</span>
           </div>
 
           <h1 className="hero-headline">
             Rancang Modul Ajar Terstruktur. <br />
-            <span className="gradient-text">Akurat, Bermakna, Tanpa Teks Asalan.</span>
+            <span className="hero-highlight-teal">Akurat, Runtut, dan Tanpa Asal Generate.</span>
           </h1>
 
           <p className="hero-subline">
-            Asisten digital bagi guru Sekolah Dasar (SD) kelas 1–6 untuk menyusun draf Modul Ajar &amp; RPP bermutu. 
-            Setiap kalimat tujuan dan kegiatan ditautkan langsung ke dokumen acuan kurikulum nasional resmi.
+            Platform pendamping guru Sekolah Dasar (SD) kelas 1–6 untuk menyusun draf Modul Ajar dan RPP berkualitas. 
+            Setiap tujuan dan alokasi pembelajaran ditautkan langsung ke rujukan resmi regulasi pendidikan nasional.
           </p>
 
           <div className="hero-buttons">
@@ -253,43 +252,43 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
               Mulai Susun Modul Ajar &rarr;
             </a>
             <a href="#studio" className="btn-hero-secondary">
-              Lihat Contoh Modul Langsung
+              Buka Pratinjau Dokumen
             </a>
           </div>
 
           <div className="hero-metrics-strip">
             <div className="metric-item">
-              <strong>100% Resmi</strong>
+              <strong>100% Terverifikasi</strong>
               <span>Sitasi Dokumen BSKAP</span>
             </div>
             <div className="metric-divider" />
             <div className="metric-item">
-              <strong>Fase A – C</strong>
+              <strong>Fase A, B, &amp; C</strong>
               <span>Kelas 1 hingga Kelas 6 SD</span>
             </div>
             <div className="metric-divider" />
             <div className="metric-item">
-              <strong>Format Standar</strong>
-              <span>Ekspor DOCX &amp; PDF Siap Pakai</span>
+              <strong>Format Terbuka</strong>
+              <span>Ekspor DOCX &amp; PDF Siap Cetak</span>
             </div>
             <div className="metric-divider" />
             <div className="metric-item">
               <strong>Pembayaran Resmi</strong>
-              <span>Terintegrasi Gerbang Midtrans</span>
+              <span>Midtrans Payment Gateway</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── LIVE INTERACTIVE DOCUMENT STUDIO (SHOW, DON'T TELL!) ── */}
+      {/* ── LIVE INTERACTIVE DOCUMENT STUDIO ── */}
       <section id="studio" className="studio-section">
         <div className="container">
           <div className="section-header-center">
-            <span className="tag-kicker">Live Interactive Preview</span>
+            <span className="tag-kicker">Pratinjau Nyata</span>
             <h2>Lihat Kualitas Draf Modul Ajar RuangRPP</h2>
             <p>
-              Coba pilih mata pelajaran di bawah ini. Anda dapat melihat bagaimana sistem kami menyusun 
-              dokumen pembelajaran yang rapi, runtut, dan lengkap dengan sitasi Capaian Pembelajaran.
+              Pilih contoh mata pelajaran di bawah untuk memeriksa bagaimana sistem kami menyusun 
+              dokumen pembelajaran terstruktur, lengkap dengan rujukan Capaian Pembelajaran dan rubrik asesmen.
             </p>
           </div>
 
@@ -318,7 +317,12 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
               {/* Paper Header */}
               <div className="paper-header">
                 <div className="paper-crest">
-                  <div className="crest-icon">📚</div>
+                  <div className="crest-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0fa895" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                    </svg>
+                  </div>
                   <div>
                     <span className="paper-instansi">PERANGKAT AJAR KURIKULUM NASIONAL · SD KELAS 1–6</span>
                     <h3 className="paper-title">{currentMod.title}</h3>
@@ -331,14 +335,23 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                 </div>
 
                 <div className="paper-status-chip">
-                  <span className="dot-green" />
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0fa895" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
                   <span>Rujukan Sah CP</span>
                 </div>
               </div>
 
               {/* Verified Citation Box */}
               <div className="citation-callout">
-                <div className="callout-icon">🏛️</div>
+                <div className="callout-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0fa895" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                  </svg>
+                </div>
                 <div className="callout-content">
                   <strong>Landasan Capaian Pembelajaran (CP) Resmi:</strong>
                   <p>{currentMod.cpRef}</p>
@@ -359,14 +372,14 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                   className={`paper-tab-btn ${activeDocTab === 'kegiatan' ? 'active' : ''}`}
                   onClick={() => setActiveDocTab('kegiatan')}
                 >
-                  Bagian 2: Langkah Aksi Pembelajaran
+                  Bagian 2: Langkah Pembelajaran
                 </button>
                 <button
                   type="button"
                   className={`paper-tab-btn ${activeDocTab === 'asesmen' ? 'active' : ''}`}
                   onClick={() => setActiveDocTab('asesmen')}
                 >
-                  Bagian 3: Rubrik Asesmen &amp; Evaluasi
+                  Bagian 3: Rubrik Asesmen
                 </button>
               </div>
 
@@ -391,7 +404,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                     <div className="doc-item">
                       <h4 className="doc-item-title">A.3 Pertanyaan Pemantik Diskusi</h4>
                       <div className="doc-item-box highlight-box">
-                        <p>💡 <em>&quot;{currentMod.triggerQ}&quot;</em></p>
+                        <p><strong>Pertanyaan Guru:</strong> &quot;{currentMod.triggerQ}&quot;</p>
                       </div>
                     </div>
                   </div>
@@ -445,11 +458,11 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
               {/* Paper Canvas Footer Toolbar */}
               <div className="paper-toolbar">
                 <span className="toolbar-info">
-                  📄 Status: <strong>Draf Siap Telaah &amp; Ekspor</strong> · Format Kompatibel Microsoft Word &amp; Google Docs
+                  Status Dokumen: <strong>Draf Siap Telaah &amp; Ekspor</strong> · Format Kompatibel Microsoft Word &amp; Google Docs
                 </span>
                 <div className="toolbar-btns">
                   <button type="button" className="btn-toolbar" onClick={handleCopySample}>
-                    {copiedNotification ? '✓ Contoh Tersalin' : '📋 Salin Cuplikan'}
+                    {copiedNotification ? '✓ Teks Tersalin' : 'Salin Cuplikan'}
                   </button>
                   <a href="#harga" className="btn-toolbar-primary">
                     Unduh Format Lengkap (.DOCX) &rarr;
@@ -461,53 +474,67 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
         </div>
       </section>
 
-      {/* ── 3 NILAI UTAMA (ANTI-SLOP PRINCIPLES) ── */}
+      {/* ── 3 NILAI UTAMA ── */}
       <section id="keunggulan" className="principles-section">
         <div className="container">
           <div className="section-header-center">
-            <span className="tag-kicker">Standar Kualitas Akademik</span>
-            <h2>Mengapa Guru Percaya pada RuangRPP?</h2>
+            <span className="tag-kicker">Standar Kualitas</span>
+            <h2>Prinsip Pembelajaran RuangRPP</h2>
             <p>
-              Banyak generator teks di internet menghasilkan tulisan yang terlihat meyakinkan namun 
-              faktanya salah fase atau bertentangan dengan kaidah asesmen Kemendikdasmen. RuangRPP dibangun dengan 
-              tiga pilar integritas:
+              Kami mengutamakan kesesuaian akademik dengan naskah kurikulum sah, bukan sekadar memproduksi 
+              teks cepat tanpa pertanggungjawaban pedagogis.
             </p>
           </div>
 
           <div className="cards-grid-3">
             <div className="glass-card">
-              <div className="card-top-icon">🏛️</div>
-              <h3>Rujukan Sah, Bukan Halusinasi</h3>
+              <div className="card-top-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0fa895" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <polyline points="9 12 11 14 15 10"/>
+                </svg>
+              </div>
+              <h3>Rujukan Sah, Bukan Rekaan</h3>
               <p>
-                Setiap penurunan tujuan belajar terhubung dengan naskah Capaian Pembelajaran (CP) sah. 
+                Setiap penurunan tujuan pembelajaran terhubung dengan naskah Capaian Pembelajaran (CP) sah. 
                 Sistem tidak mengarang mata pelajaran atau capaian fiktif yang tidak ada di standar kurikulum.
               </p>
               <div className="card-pill-tag">
-                <span>✓ Sesuai SK BSKAP 046/2025</span>
+                <span>SK BSKAP 046/2025</span>
               </div>
             </div>
 
             <div className="glass-card popular">
-              <div className="card-top-icon">⏱️</div>
+              <div className="card-top-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0fa895" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </div>
               <h3>Proporsi Jam Pelajaran Riil SD</h3>
               <p>
                 Membedakan durasi riil menit dengan Jam Pelajaran (JP) kelas SD. Alokasi kegiatan pembuka, 
-                inti, dan penutup dihitung pas agar realistis dilaksanakan guru di depan kelas.
+                inti, dan penutup dihitung proporsional agar realistis diterapkan guru di kelas.
               </p>
               <div className="card-pill-tag">
-                <span>✓ Alokasi 35 Menit / JP Realistis</span>
+                <span>Alokasi 35 Menit / JP</span>
               </div>
             </div>
 
             <div className="glass-card">
-              <div className="card-top-icon">👨‍🏫</div>
+              <div className="card-top-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0fa895" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </div>
               <h3>Pemberdaya Guru, Bukan Pengganti</h3>
               <p>
-                Hasil berstatus draf kerja kerja terstruktur. Guru tetap memegang kendali untuk 
+                Hasil berstatus draf kerja terstruktur. Guru tetap memegang kendali penuh untuk 
                 menyesuaikan ketersediaan sarana kelas, keberagaman murid, dan kearifan budaya sekolah.
               </p>
               <div className="card-pill-tag">
-                <span>✓ Format Terbuka Siap Edit</span>
+                <span>Format Terbuka Siap Edit</span>
               </div>
             </div>
           </div>
@@ -519,10 +546,10 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
         <div className="container">
           <div className="section-header-center">
             <span className="tag-kicker">Alur Kerja Cepat</span>
-            <h2>Hemat 70% Waktu Administrasi dalam 4 Langkah</h2>
+            <h2>Hemat Waktu Administrasi dalam 4 Langkah</h2>
             <p>
-              Fokuskan energi Anda untuk berinteraksi dan membimbing murid di kelas, biar kami yang 
-              merapikan kerangka dokumen administratifnya.
+              Fokuskan perhatian Anda untuk membimbing dan berinteraksi dengan murid, sementara 
+              kerangka dokumen pembelajaran terstandar siap digunakan.
             </p>
           </div>
 
@@ -560,15 +587,15 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
         </div>
       </section>
 
-      {/* ── TABEL PAKET & HARGA (PENTING UNTUK MIDTRANS KYC) ── */}
+      {/* ── TABEL PAKET & HARGA ── */}
       <section id="harga" className="pricing-section-v2">
         <div className="container">
           <div className="section-header-center">
-            <span className="tag-kicker">Harga Transparan Tanpa Biaya Tersembunyi</span>
-            <h2>Investasi Terjangkau untuk Ketenangan Mengajar</h2>
+            <span className="tag-kicker">Biaya Transparan</span>
+            <h2>Pilihan Paket Layanan RuangRPP</h2>
             <p>
-              Pilih paket yang paling fleksibel untuk Anda atau sekolah Anda. Semua transaksi 
-              diproses secara aman dan instan dengan <strong>Midtrans Payment Gateway</strong>.
+              Pilih paket yang paling sesuai dengan kebutuhan Anda atau sekolah Anda. Transaksi 
+              diproses aman dan instan melalui gerbang pembayaran <strong>Midtrans</strong>.
             </p>
           </div>
 
@@ -623,7 +650,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
               </div>
             </div>
             <p className="assurance-sub">
-              Sistem transaksi online terenkripsi 256-bit dan diawasi oleh Bank Indonesia melalui <strong>Midtrans</strong>. 
+              Sistem transaksi online terenkripsi dan diawasi oleh Bank Indonesia melalui <strong>Midtrans</strong>. 
               Layanan aktif otomatis tanpa perlu konfirmasi transfer manual.
             </p>
           </div>
@@ -634,7 +661,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
       <section id="faq" className="faq-section">
         <div className="container-narrow">
           <div className="section-header-center">
-            <span className="tag-kicker">Bantuan &amp; Jawaban</span>
+            <span className="tag-kicker">Tanya Jawab</span>
             <h2>Pertanyaan yang Sering Diajukan Guru</h2>
           </div>
 
@@ -665,16 +692,25 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
         <div className="container">
           <div className="contact-inner-card">
             <div className="contact-text">
-              <h3>Butuh Bantuan atau Ingin Bertanya?</h3>
-              <p>Tim dukungan RuangRPP siap mendampingi Anda di hari kerja (Senin–Jumat, 08.00–17.00 WIB).</p>
+              <h3>Pusat Bantuan &amp; Layanan Pengguna</h3>
+              <p>Tim dukungan RuangRPP siap melayani Anda di hari kerja (Senin–Jumat, 08.00–17.00 WIB).</p>
               <div className="contact-badges-row">
-                <span className="c-chip">✉️ support@ruangrpp.id</span>
-                <span className="c-chip">💬 WhatsApp: +62 821-2345-6789</span>
-                <span className="c-chip">📍 Indonesia (Layanan Web SaaS Nasional)</span>
+                <span className="c-chip">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  support@ruangrpp.id
+                </span>
+                <span className="c-chip">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                  WhatsApp: +62 821-2345-6789
+                </span>
+                <span className="c-chip">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Indonesia (Web SaaS Nasional)
+                </span>
               </div>
             </div>
             <div className="contact-btn-box">
-              <a href="#harga" className="btn-primary-glow">
+              <a href="#harga" className="btn-primary-teal">
                 Pilih Paket Sekarang &rarr;
               </a>
             </div>
@@ -687,15 +723,16 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
         <div className="container">
           <div className="footer-top-grid">
             <div className="footer-brand-col">
-              <span className="brand-main">Ruang<strong>RPP</strong></span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo-ruangRPP-transparent.png" alt="RuangRPP" height={32} className="footer-logo-img" />
               <p className="footer-desc">
-                Rancang Pembelajaran, Lebih Mudah. Platform digital pendamping guru SD dalam menyusun 
+                Rancang Pembelajaran, Lebih Mudah. Platform pendamping guru SD dalam menyusun 
                 draf modul ajar berlandaskan Capaian Pembelajaran resmi kurikulum nasional.
               </p>
             </div>
 
             <div className="footer-links-col">
-              <strong>Navigasi Cepat</strong>
+              <strong>Navigasi</strong>
               <ul>
                 <li><a href="#studio">Studio Modul</a></li>
                 <li><a href="#keunggulan">Prinsip &amp; Mutu</a></li>
@@ -705,7 +742,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
             </div>
 
             <div className="footer-links-col">
-              <strong>Kebijakan &amp; Legal</strong>
+              <strong>Legalitas &amp; Hak Konsumen</strong>
               <ul>
                 <li><button type="button" className="btn-footer-link" onClick={() => setLegalModal('refund')}>Kebijakan Pengembalian Dana (Refund)</button></li>
                 <li><button type="button" className="btn-footer-link" onClick={() => setLegalModal('terms')}>Syarat &amp; Ketentuan Layanan</button></li>
@@ -886,7 +923,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                   <div className="success-icon-badge">✓</div>
                   <h3>Simulasi Alur Pembayaran Berhasil!</h3>
                   <p>
-                    Dalam lingkungan produksi (*production*), jendela popup <strong>Midtrans Snap</strong> akan 
+                    Dalam lingkungan produksi (production), jendela popup <strong>Midtrans Snap</strong> akan 
                     otomatis menampilkan kode QRIS atau nomor Virtual Account sesuai pilihan Anda.
                   </p>
                   
@@ -952,7 +989,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                   <p><strong>2. Syarat Pengajuan Refund</strong></p>
                   <ul>
                     <li>Pengguna mengalami kendala teknis sistemik permanen di platform RuangRPP dalam kurun waktu 3x24 jam sejak transaksi dan kuota tidak dapat digunakan sama sekali.</li>
-                    <li>Terjadi transaksi ganda (*double charge*) yang disebabkan oleh gangguan jaringan gerbang pembayaran.</li>
+                    <li>Terjadi transaksi ganda (double charge) yang disebabkan oleh gangguan jaringan gerbang pembayaran.</li>
                   </ul>
 
                   <p><strong>3. Prosedur Klaim</strong></p>

@@ -11,6 +11,11 @@ const font = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   title: 'RuangRPP — Rancang Pembelajaran, Lebih Mudah',
   description: 'Platform digital pendamping guru SD dalam menyusun draf Modul Ajar dan RPP terstruktur berlandaskan Capaian Pembelajaran Kurikulum Nasional.',
+  icons: {
+    icon: '/icon.png',
+    shortcut: '/icon.png',
+    apple: '/icon.png',
+  },
 };
 
 export default function Layout({ children }: Readonly<{children: React.ReactNode}>) {

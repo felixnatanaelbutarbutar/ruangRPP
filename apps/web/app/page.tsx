@@ -761,7 +761,8 @@ export default function Page() {
             >
               &larr; Kembali ke Beranda RuangRPP
             </button>
-            <div className="brand">Ruang<span>RPP</span></div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo-ruangRPP-transparent.png" alt="RuangRPP" height={38} style={{ marginBottom: 22, display: 'block' }} />
             <h1>Masuk ke admin</h1>
             <p>Kelola sumber dan operasional RuangRPP.</p>
             <form onSubmit={login}>
