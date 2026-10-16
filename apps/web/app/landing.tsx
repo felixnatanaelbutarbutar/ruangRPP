@@ -1,5 +1,5 @@
 'use client';
-import { useState, useId, useEffect } from 'react';
+import { useState } from 'react';
 
 type Plan = {
   id: string;
@@ -7,10 +7,65 @@ type Plan = {
   badge?: string;
   price: string;
   period: string;
+  priceNumber: number;
   desc: string;
   features: string[];
   recommended?: boolean;
 };
+
+const SAMPLE_MODULES = [
+  {
+    id: 'ipas',
+    title: 'Fotosintesis: Dapur Ajaib Tumbuhan',
+    subject: 'IPAS (Ilmu Pengetahuan Alam & Sosial)',
+    phase: 'Fase B · Kelas 4 SD',
+    duration: '2 Pertemuan (4 JP x 35 Menit)',
+    cpRef: 'Keputusan Kepala BSKAP No. 046/H/KR/2025 (Elemen Pemahaman IPAS Sains)',
+    tp: 'Peserta didik menganalisis kebutuhan tumbuhan untuk melakukan fotosintesis serta mengaitkan dampaknya terhadap ketersediaan oksigen bagi makhluk hidup.',
+    meaningful: 'Tumbuhan adalah produsen utama di bumi; menjaga kelestarian pohon berarti menjaga napas seluruh kehidupan di lingkungan sekolah kita.',
+    triggerQ: 'Dari mana pohon besar di halaman sekolah mendapatkan makanannya padahal tidak memiliki mulut?',
+    activities: [
+      { time: '10m', type: 'Pembuka', desc: 'Apersepsi: Guru membawa daun segar & daun layu, mengajak murid mengamati perbedaan warna dan tekstur.' },
+      { time: '50m', type: 'Inti (Diferensiasi)', desc: 'Kelompok visual mengamati infografis klorofil; kelompok kinestetik melakukan uji bayangan cahaya matahari pada tanaman pot.' },
+      { time: '10m', type: 'Penutup', desc: 'Refleksi "Satu Kata Hari Ini" dan penugasan lembar observasi tanaman rumah sederhana.' },
+    ],
+    assessment: 'Formatif: Lembar ceklis observasi diskusi kelompok & jurnal refleksi belajar mandiri murid.',
+  },
+  {
+    id: 'matematika',
+    title: 'Eksplorasi Pecahan Sederhana (1/2 dan 1/4)',
+    subject: 'Matematika Dasar',
+    phase: 'Fase A · Kelas 2 SD',
+    duration: '2 Pertemuan (4 JP x 35 Menit)',
+    cpRef: 'Keputusan BSKAP No. 046/H/KR/2025 (Elemen Bilangan Fase A)',
+    tp: 'Peserta didik mampu menunjukkan makna pecahan setengah (1/2) dan seperempat (1/4) menggunakan benda konkret berbentuk lingkaran dan persegi.',
+    meaningful: 'Berbagi makanan atau barang secara adil kepada saudara dan teman dimulai dari memahami pecahan yang sama besar.',
+    triggerQ: 'Jika kamu memiliki satu buah kue bolu dan ingin membaginya rata dengan adikmu, bagaimana cara memotongnya?',
+    activities: [
+      { time: '10m', type: 'Pembuka', desc: 'Permainan melipat kertas origami menjadi 2 bagian yang saling menutupi sempurna.' },
+      { time: '50m', type: 'Inti (Eksploratif)', desc: 'Memotong replika buah plastisin; membedakan potongan yang adil (sama besar) dan tidak adil.' },
+      { time: '10m', type: 'Penutup', desc: 'Menempelkan potongan karya di "Pohon Pecahan Ceria" di dinding kelas.' },
+    ],
+    assessment: 'Unjuk kerja: Kemampuan menunjukkan bagian 1/2 dan 1/4 dengan alat peraga kertas lipat.',
+  },
+  {
+    id: 'bindo',
+    title: 'Menulis Teks Eksplanasi: Mengapa Terjadi Hujan?',
+    subject: 'Bahasa Indonesia',
+    phase: 'Fase C · Kelas 5 SD',
+    duration: '3 Pertemuan (6 JP x 35 Menit)',
+    cpRef: 'Keputusan BSKAP No. 046/H/KR/2025 (Elemen Menulis Fase C)',
+    tp: 'Peserta didik mampu menulis teks eksplanasi sebab-akibat sederhana tentang fenomena siklus air menggunakan kosakata baku dan tanda baca tepat.',
+    meaningful: 'Memahami fenomena alam membuat kita sadar pentingnya menjaga kebersihan sungai dan daerah resapan air di pemukiman.',
+    triggerQ: 'Mengapa air hujan yang jatuh dari langit tidak pernah habis meskipun turun terus-menerus?',
+    activities: [
+      { time: '15m', type: 'Pembuka', desc: 'Menyimak rekaman suara gemercik hujan dan menceritakan pengalaman banjir/hujan deras.' },
+      { time: '45m', type: 'Inti (Struktur Teks)', desc: 'Menyusun kerangka teks sebab-akibat (evaporasi, kondensasi, presipitasi) dengan peta pikiran.' },
+      { time: '10m', type: 'Penutup', desc: 'Saling membaca draf kalimat pertama dengan teman sebangku (*peer feedback*).' },
+    ],
+    assessment: 'Rubrik penulisan: Struktur pembuka, deretan penjelas, ketepatan konjungsi kausalitas.',
+  },
+];
 
 const PLANS: Plan[] = [
   {
@@ -18,74 +73,107 @@ const PLANS: Plan[] = [
     name: 'Paket Uji Coba',
     price: 'Rp 0',
     period: 'gratis 3 hari',
-    desc: 'Untuk mengenal dan menguji kualitas draf modul ajar RuangRPP.',
+    priceNumber: 0,
+    desc: 'Untuk mengenal dan menguji kualitas draf modul ajar terstruktur RuangRPP.',
     features: [
-      '3 Draf Modul Ajar SD',
+      '3 Draf Modul Ajar SD Lengkap',
       'Akses Fase A, B, dan C',
       'Rujukan Capaian Pembelajaran resmi',
-      'Pratinjau struktur modul ajar',
+      'Pratinjau struktur modul terstandar',
     ],
   },
   {
     id: 'mandiri',
-    name: 'Paket Guru Mandiri',
+    name: 'Guru Mandiri',
     badge: 'Paling Hemat',
     price: 'Rp 29.000',
-    period: 'sekali bayar / kuota',
-    desc: 'Solusi praktis untuk kebutuhan persiapan mengajar modul tertentu.',
+    period: 'sekali bayar / 15 draf',
+    priceNumber: 29000,
+    desc: 'Sangat cocok untuk persiapan unit pembelajaran mata pelajaran tertentu.',
     features: [
       '15 Draf Modul Ajar Lengkap',
-      'Semua Mata Pelajaran SD',
+      'Seluruh Mapel SD (Fase A, B, C)',
       'Ekspor format DOCX (Word) & PDF',
-      'Panduan diferensiasi & asesmen',
-      'Riwayat tersimpan permanen',
-      'Aktivasi instan via Midtrans',
+      'Panduan diferensiasi & asesmen terlampir',
+      'Riwayat tersimpan permanen tanpa batas',
+      'Aktivasi instan otomatis via Midtrans',
     ],
   },
   {
     id: 'semester',
-    name: 'Paket Guru Semester',
-    badge: 'Rekomendasi',
+    name: 'Guru Profesional',
+    badge: 'Paling Populer',
     price: 'Rp 79.000',
     period: 'per semester (6 bulan)',
-    desc: 'Pendamping lengkap persiapan ajar 1 semester penuh untuk 1 guru.',
+    priceNumber: 79000,
+    desc: 'Akses tanpa batas untuk 1 semester penuh bagi guru wali kelas maupun mapel.',
     features: [
       'Draf Modul Ajar Tanpa Batas',
-      'Seluruh Fase A–C (Kelas 1–6)',
-      'Ekspor DOCX & PDF siap cetak',
-      'Generator asesmen & lembar refleksi',
-      'Pembaruan berkala sesuai regulasi',
-      'Bantuan prioritas via WhatsApp',
+      'Seluruh Kelas 1–6 (Fase A, B, C)',
+      'Ekspor dokumen siap cetak & siap telaah',
+      'Generator instrumen rubrik asesmen',
+      'Pembaruan otomatis regulasi Kemendikdasmen',
+      'Dukungan prioritas tim via WhatsApp',
     ],
     recommended: true,
   },
   {
     id: 'sekolah',
-    name: 'Paket Sekolah & KKG',
+    name: 'Sekolah & KKG',
     badge: 'Satuan Pendidikan',
     price: 'Rp 249.000',
     period: 'per tahun ajaran',
-    desc: 'Lisensi multi-guru untuk sekolah, gugus, atau kelompok kerja guru.',
+    priceNumber: 249000,
+    desc: 'Lisensi multi-guru untuk sekolah dasar, gugus, atau kelompok kerja guru.',
     features: [
-      'Hingga 10 Akun Guru',
-      'Akses tak terbatas selama 1 tahun',
-      'Standarisasi perangkat ajar sekolah',
-      'Format kop surat & identitas sekolah',
-      'Faktur & bukti potong instansi',
-      'Sesi orientasi penggunaan via Zoom',
+      'Hingga 10 Akun Guru Terdaftar',
+      'Akses tak terbatas selama 1 tahun penuh',
+      'Standarisasi perangkat ajar satu sekolah',
+      'Format identitas & kop surat sekolah resmi',
+      'Faktur pajak / invoice resmi instansi',
+      'Sesi orientasi penggunaan via Zoom online',
     ],
+  },
+];
+
+const FAQS = [
+  {
+    q: 'Apakah modul ajar yang dihasilkan sudah sesuai regulasi kurikulum terbaru?',
+    a: 'Ya. RuangRPP secara ketat berlandaskan pada dokumen regulasi Capaian Pembelajaran resmi (CP No. 046/H/KR/2025 dan Permendikdasmen terkait). Setiap tujuan pembelajaran yang dihasilkan memiliki rujukan kutipan elemen dan fase dokumen aslinya, bukan karangan AI acak.',
+  },
+  {
+    q: 'Apakah guru tetap bisa mengedit hasil drafnya?',
+    a: 'Tentu saja. Di RuangRPP, filosofi kami adalah bahwa guru memegang kendali pedagogis penuh. Hasil generator selalu berstatus draf kerja yang dapat Anda sesuaikan di editor kami, lalu diunduh dalam format Microsoft Word (.DOCX) atau PDF agar leluasa dicetak.',
+  },
+  {
+    q: 'Bagaimana cara pembayaran dan aktivasinya?',
+    a: 'Pembayaran dilakukan secara aman melalui gerbang pembayaran resmi Midtrans. Anda dapat memilih QRIS (GoPay, OVO, ShopeePay, DANA, BCA Mobile), Transfer Virtual Account, atau Kartu Kredit. Akun Anda langsung aktif secara otomatis dalam hitungan detik setelah bayar.',
+  },
+  {
+    q: 'Apakah ada jaminan pengembalian dana (refund)?',
+    a: 'Ada. Kami menyediakan garansi pengembalian dana 100% dalam waktu 3x24 jam sejak transaksi jika terjadi kendala teknis sistemik di platform kami yang mengakibatkan layanan tidak dapat digunakan sama sekali.',
+  },
+  {
+    q: 'Apakah cocok untuk semua mata pelajaran SD?',
+    a: 'Ya, RuangRPP mendukung seluruh mata pelajaran jenjang SD mulai dari Matematika, Bahasa Indonesia, IPAS, Pendidikan Pancasila, PJOK, hingga Seni Budaya dan muatan lokal.',
   },
 ];
 
 export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
-  const [activeTab, setActiveTab] = useState<'fitur' | 'alur' | 'harga' | 'legal'>('fitur');
+  const [activeModuleIndex, setActiveModuleIndex] = useState(0);
+  const [activeDocTab, setActiveDocTab] = useState<'tp' | 'kegiatan' | 'asesmen'>('tp');
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [copiedNotification, setCopiedNotification] = useState(false);
   const [legalModal, setLegalModal] = useState<'terms' | 'privacy' | 'refund' | null>(null);
+
+  // Checkout Simulator State
   const [checkoutStep, setCheckoutStep] = useState<'form' | 'processing' | 'success'>('form');
   const [paymentMethod, setPaymentMethod] = useState<'qris' | 'va' | 'card'>('qris');
   const [customer, setCustomer] = useState({ name: '', email: '', phone: '', school: '' });
 
-  // Handle checkout simulation
+  const currentMod = SAMPLE_MODULES[activeModuleIndex];
+
   const handleOpenCheckout = (plan: Plan) => {
     setSelectedPlan(plan);
     setCheckoutStep('form');
@@ -99,359 +187,549 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
     }, 1200);
   };
 
+  const handleCopySample = () => {
+    setCopiedNotification(true);
+    setTimeout(() => setCopiedNotification(false), 2000);
+  };
+
   return (
-    <div className="landing-wrap">
-      {/* ── TOP HEADER / NAV ── */}
-      <header className="landing-nav">
-        <div className="nav-container">
-          <div className="nav-brand">
-            <span className="brand-title">Ruang<span className="brand-accent">RPP</span></span>
-            <span className="brand-tag">Platform Perangkat Ajar SD</span>
+    <div className="landing-scope">
+      {/* ── TOP NAV BAR ── */}
+      <header className="site-header">
+        <div className="header-inner">
+          <div className="brand-group">
+            <span className="brand-symbol">R</span>
+            <div className="brand-text">
+              <span className="brand-main">Ruang<strong>RPP</strong></span>
+              <span className="brand-caption">Platform Perangkat Ajar SD</span>
+            </div>
           </div>
 
-          <nav className="nav-menu">
-            <a href="#keunggulan">Prinsip Kerja</a>
-            <a href="#alur-kerja">Alur Guru</a>
+          <nav className="header-nav">
+            <a href="#studio">Studio Modul</a>
+            <a href="#keunggulan">Prinsip &amp; Mutu</a>
+            <a href="#alur">Alur Guru</a>
             <a href="#harga">Paket &amp; Harga</a>
-            <a href="#kebijakan">Syarat &amp; Refund</a>
-            <a href="#kontak">Bantuan</a>
+            <a href="#faq">Tanya Jawab</a>
           </nav>
 
-          <div className="nav-actions">
+          <div className="header-cta">
             <button
               type="button"
-              className="secondary small"
+              className="btn-link"
               onClick={onOpenLogin}
               title="Akses masuk untuk tim pengelola dan peninjau"
             >
               Masuk Tim Pengelola
             </button>
-            <a href="#harga" className="primary small">
-              Pilih Paket
+            <a href="#harga" className="btn-primary-glow">
+              Pilih Paket &rarr;
             </a>
           </div>
         </div>
       </header>
 
       {/* ── HERO SECTION ── */}
-      <section className="hero-section">
-        <div className="hero-content">
-          <div className="hero-pill">
-            <span className="pill-dot" />
-            <span>Berbasis Capaian Pembelajaran Resmi Kemendikdasmen (Fase A, B, &amp; C)</span>
+      <section className="hero-section-v2">
+        <div className="hero-glow-blob" />
+        <div className="hero-container">
+          <div className="hero-badge-pill">
+            <span className="pill-pulse" />
+            <span className="pill-text">Sesuai Capaian Pembelajaran Resmi Kemendikdasmen No. 046/H/KR/2025</span>
           </div>
 
-          <h1 className="hero-title">
-            Rancang Pembelajaran Lebih Terstruktur. <br />
-            <span className="hero-highlight">Bermutu, Akurat, dan Tanpa Halusinasi.</span>
+          <h1 className="hero-headline">
+            Rancang Modul Ajar Terstruktur. <br />
+            <span className="gradient-text">Akurat, Bermakna, Tanpa Teks Asalan.</span>
           </h1>
 
-          <p className="hero-desc">
-            RuangRPP adalah pendamping kerja digital bagi guru Sekolah Dasar (SD) dalam menyusun draf 
-            Modul Ajar dan RPP bermakna. Didasarkan pada rujukan resmi dokumen kurikulum nasional—bukan teks 
-            karangan acak tanpa landasan acuan.
+          <p className="hero-subline">
+            Asisten digital bagi guru Sekolah Dasar (SD) kelas 1–6 untuk menyusun draf Modul Ajar &amp; RPP bermutu. 
+            Setiap kalimat tujuan dan kegiatan ditautkan langsung ke dokumen acuan kurikulum nasional resmi.
           </p>
 
-          <div className="hero-cta">
-            <a href="#harga" className="primary hero-btn">
-              Lihat Pilihan Paket &amp; Simulasi Bayar &rarr;
+          <div className="hero-buttons">
+            <a href="#harga" className="btn-hero-primary">
+              Mulai Susun Modul Ajar &rarr;
             </a>
-            <a href="#alur-kerja" className="secondary hero-btn">
-              Pelajari Alur 4 Langkah
+            <a href="#studio" className="btn-hero-secondary">
+              Lihat Contoh Modul Langsung
             </a>
           </div>
 
-          <div className="hero-badges">
-            <div className="hero-badge-item">
-              <strong>Acuan Terverifikasi</strong>
-              <span>CP 046/H/KR/2025 &amp; Panduan BSKAP</span>
+          <div className="hero-metrics-strip">
+            <div className="metric-item">
+              <strong>100% Resmi</strong>
+              <span>Sitasi Dokumen BSKAP</span>
             </div>
-            <div className="hero-badge-item">
-              <strong>Kendali Guru</strong>
-              <span>Draf kerja siap tinjau, edit, &amp; modifikasi</span>
+            <div className="metric-divider" />
+            <div className="metric-item">
+              <strong>Fase A – C</strong>
+              <span>Kelas 1 hingga Kelas 6 SD</span>
             </div>
-            <div className="hero-badge-item">
+            <div className="metric-divider" />
+            <div className="metric-item">
               <strong>Format Standar</strong>
-              <span>Ekspor DOCX &amp; PDF siap cetak instansi</span>
+              <span>Ekspor DOCX &amp; PDF Siap Pakai</span>
             </div>
-            <div className="hero-badge-item">
-              <strong>Aktivasi Instan</strong>
-              <span>Integrasi pembayaran digital Midtrans</span>
+            <div className="metric-divider" />
+            <div className="metric-item">
+              <strong>Pembayaran Resmi</strong>
+              <span>Terintegrasi Gerbang Midtrans</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── PRINSIP KERJA & KEUNGGULAN (ANTI-SLOP) ── */}
-      <section id="keunggulan" className="section-block">
-        <div className="section-head text-center">
-          <span className="section-kicker">Etika &amp; Mutu Pembelajaran</span>
-          <h2>Mengapa RuangRPP Berbeda dari Generator Biasa?</h2>
-          <p>
-            Banyak generator AI membuat materi yang terdengar meyakinkan namun salah fase, keliru menurunkan tujuan, 
-            atau mengabaikan regulasi. RuangRPP dibangun dengan prinsip kehati-hatian akademik.
-          </p>
-        </div>
-
-        <div className="grid-3">
-          <div className="feature-card">
-            <div className="feature-num">01</div>
-            <h3>Rujukan Sah, Bukan Halusinasi</h3>
+      {/* ── LIVE INTERACTIVE DOCUMENT STUDIO (SHOW, DON'T TELL!) ── */}
+      <section id="studio" className="studio-section">
+        <div className="container">
+          <div className="section-header-center">
+            <span className="tag-kicker">Live Interactive Preview</span>
+            <h2>Lihat Kualitas Draf Modul Ajar RuangRPP</h2>
             <p>
-              Setiap tujuan pembelajaran, indikator, dan alur materi selalu dikaitkan langsung dengan Capaian Pembelajaran (CP) 
-              resmi per mata pelajaran dan per fase. Anda mengetahui dari mana asal rujukan setiap kalimat.
+              Coba pilih mata pelajaran di bawah ini. Anda dapat melihat bagaimana sistem kami menyusun 
+              dokumen pembelajaran yang rapi, runtut, dan lengkap dengan sitasi Capaian Pembelajaran.
             </p>
           </div>
 
-          <div className="feature-card">
-            <div className="feature-num">02</div>
-            <h3>Pembedaan Durasi Nyata &amp; Jam Pelajaran (JP)</h3>
-            <p>
-              Aplikasi membedakan menit riil pembelajaran dan jumlah jam pelajaran di sekolah. Kegiatan pembuka, 
-              inti, dan penutup dialokasikan proporsional sesuai kondisi anak usia SD.
-            </p>
+          {/* Subject Switcher Pills */}
+          <div className="subject-pills-bar">
+            {SAMPLE_MODULES.map((mod, idx) => (
+              <button
+                key={mod.id}
+                type="button"
+                className={`subject-pill ${activeModuleIndex === idx ? 'active' : ''}`}
+                onClick={() => {
+                  setActiveModuleIndex(idx);
+                  setActiveDocTab('tp');
+                }}
+              >
+                <span className="pill-index">Contoh {idx + 1}</span>
+                <strong>{mod.subject}</strong>
+                <small>{mod.phase}</small>
+              </button>
+            ))}
           </div>
 
-          <div className="feature-card">
-            <div className="feature-num">03</div>
-            <h3>Draf Kerja Guru, Bukan Pengganti Guru</h3>
-            <p>
-              Hasil selalu berstatus draf kerja terstruktur. Guru tetap memegang hak prerogatif untuk menyesuaikan 
-              sarana sekolah, keragaman kebutuhan murid di kelas, dan nilai lokal sebelum digunakan.
-            </p>
+          {/* Paper Canvas Mockup */}
+          <div className="paper-canvas-wrap">
+            <div className="paper-canvas">
+              {/* Paper Header */}
+              <div className="paper-header">
+                <div className="paper-crest">
+                  <div className="crest-icon">📚</div>
+                  <div>
+                    <span className="paper-instansi">PERANGKAT AJAR KURIKULUM NASIONAL · SD KELAS 1–6</span>
+                    <h3 className="paper-title">{currentMod.title}</h3>
+                    <div className="paper-meta-row">
+                      <span className="meta-badge-dark">{currentMod.subject}</span>
+                      <span className="meta-badge-dark">{currentMod.phase}</span>
+                      <span className="meta-badge-dark">{currentMod.duration}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="paper-status-chip">
+                  <span className="dot-green" />
+                  <span>Rujukan Sah CP</span>
+                </div>
+              </div>
+
+              {/* Verified Citation Box */}
+              <div className="citation-callout">
+                <div className="callout-icon">🏛️</div>
+                <div className="callout-content">
+                  <strong>Landasan Capaian Pembelajaran (CP) Resmi:</strong>
+                  <p>{currentMod.cpRef}</p>
+                </div>
+              </div>
+
+              {/* Paper Content Navigation Tabs */}
+              <div className="paper-tabs">
+                <button
+                  type="button"
+                  className={`paper-tab-btn ${activeDocTab === 'tp' ? 'active' : ''}`}
+                  onClick={() => setActiveDocTab('tp')}
+                >
+                  Bagian 1: Tujuan &amp; Pemahaman
+                </button>
+                <button
+                  type="button"
+                  className={`paper-tab-btn ${activeDocTab === 'kegiatan' ? 'active' : ''}`}
+                  onClick={() => setActiveDocTab('kegiatan')}
+                >
+                  Bagian 2: Langkah Aksi Pembelajaran
+                </button>
+                <button
+                  type="button"
+                  className={`paper-tab-btn ${activeDocTab === 'asesmen' ? 'active' : ''}`}
+                  onClick={() => setActiveDocTab('asesmen')}
+                >
+                  Bagian 3: Rubrik Asesmen &amp; Evaluasi
+                </button>
+              </div>
+
+              {/* Tab Contents */}
+              <div className="paper-body">
+                {activeDocTab === 'tp' && (
+                  <div className="doc-section">
+                    <div className="doc-item">
+                      <h4 className="doc-item-title">A.1 Tujuan Pembelajaran (Diturunkan dari CP)</h4>
+                      <div className="doc-item-box quote-style">
+                        <p>{currentMod.tp}</p>
+                      </div>
+                    </div>
+
+                    <div className="doc-item">
+                      <h4 className="doc-item-title">A.2 Pemahaman Bermakna Bagi Murid</h4>
+                      <div className="doc-item-box">
+                        <p>{currentMod.meaningful}</p>
+                      </div>
+                    </div>
+
+                    <div className="doc-item">
+                      <h4 className="doc-item-title">A.3 Pertanyaan Pemantik Diskusi</h4>
+                      <div className="doc-item-box highlight-box">
+                        <p>💡 <em>&quot;{currentMod.triggerQ}&quot;</em></p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeDocTab === 'kegiatan' && (
+                  <div className="doc-section">
+                    <h4 className="doc-item-title">B. Rangkaian Kegiatan Pembelajaran (Berdiferensiasi)</h4>
+                    <p className="doc-sub">Waktu terdistribusi terencana sesuai alokasi Jam Pelajaran (JP) riil di sekolah.</p>
+                    
+                    <div className="activity-timeline">
+                      {currentMod.activities.map((act, i) => (
+                        <div key={i} className="activity-card">
+                          <div className="activity-time-badge">
+                            <span>{act.time}</span>
+                            <small>{act.type}</small>
+                          </div>
+                          <div className="activity-desc">
+                            <p>{act.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {activeDocTab === 'asesmen' && (
+                  <div className="doc-section">
+                    <h4 className="doc-item-title">C. Instrumen &amp; Rubrik Asesmen Ketercapaian</h4>
+                    <div className="doc-item-box">
+                      <p><strong>Bentuk Asesmen:</strong> {currentMod.assessment}</p>
+                      <div className="rubric-mini-table">
+                        <div className="rubric-col">
+                          <strong>Perlu Bimbingan</strong>
+                          <span>Belum mampu mengidentifikasi komponen dasar secara mandiri.</span>
+                        </div>
+                        <div className="rubric-col">
+                          <strong>Cukup</strong>
+                          <span>Menyebutkan komponen dengan bantuan pertanyaan pancingan guru.</span>
+                        </div>
+                        <div className="rubric-col highlight">
+                          <strong>Sangat Baik</strong>
+                          <span>Mampu menjelaskan hubungan sebab-akibat secara runtut dan percaya diri.</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Paper Canvas Footer Toolbar */}
+              <div className="paper-toolbar">
+                <span className="toolbar-info">
+                  📄 Status: <strong>Draf Siap Telaah &amp; Ekspor</strong> · Format Kompatibel Microsoft Word &amp; Google Docs
+                </span>
+                <div className="toolbar-btns">
+                  <button type="button" className="btn-toolbar" onClick={handleCopySample}>
+                    {copiedNotification ? '✓ Contoh Tersalin' : '📋 Salin Cuplikan'}
+                  </button>
+                  <a href="#harga" className="btn-toolbar-primary">
+                    Unduh Format Lengkap (.DOCX) &rarr;
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── 4 LANGKAH ALUR KERJA ── */}
-      <section id="alur-kerja" className="section-block alt-bg">
-        <div className="section-head text-center">
-          <span className="section-kicker">Alur Praktis</span>
-          <h2>4 Langkah Penyusunan Modul Ajar</h2>
-          <p>Dirancang menghemat waktu administrasi guru hingga 70% agar lebih fokus pada interaksi murid.</p>
+      {/* ── 3 NILAI UTAMA (ANTI-SLOP PRINCIPLES) ── */}
+      <section id="keunggulan" className="principles-section">
+        <div className="container">
+          <div className="section-header-center">
+            <span className="tag-kicker">Standar Kualitas Akademik</span>
+            <h2>Mengapa Guru Percaya pada RuangRPP?</h2>
+            <p>
+              Banyak generator teks di internet menghasilkan tulisan yang terlihat meyakinkan namun 
+              faktanya salah fase atau bertentangan dengan kaidah asesmen Kemendikdasmen. RuangRPP dibangun dengan 
+              tiga pilar integritas:
+            </p>
+          </div>
+
+          <div className="cards-grid-3">
+            <div className="glass-card">
+              <div className="card-top-icon">🏛️</div>
+              <h3>Rujukan Sah, Bukan Halusinasi</h3>
+              <p>
+                Setiap penurunan tujuan belajar terhubung dengan naskah Capaian Pembelajaran (CP) sah. 
+                Sistem tidak mengarang mata pelajaran atau capaian fiktif yang tidak ada di standar kurikulum.
+              </p>
+              <div className="card-pill-tag">
+                <span>✓ Sesuai SK BSKAP 046/2025</span>
+              </div>
+            </div>
+
+            <div className="glass-card popular">
+              <div className="card-top-icon">⏱️</div>
+              <h3>Proporsi Jam Pelajaran Riil SD</h3>
+              <p>
+                Membedakan durasi riil menit dengan Jam Pelajaran (JP) kelas SD. Alokasi kegiatan pembuka, 
+                inti, dan penutup dihitung pas agar realistis dilaksanakan guru di depan kelas.
+              </p>
+              <div className="card-pill-tag">
+                <span>✓ Alokasi 35 Menit / JP Realistis</span>
+              </div>
+            </div>
+
+            <div className="glass-card">
+              <div className="card-top-icon">👨‍🏫</div>
+              <h3>Pemberdaya Guru, Bukan Pengganti</h3>
+              <p>
+                Hasil berstatus draf kerja kerja terstruktur. Guru tetap memegang kendali untuk 
+                menyesuaikan ketersediaan sarana kelas, keberagaman murid, dan kearifan budaya sekolah.
+              </p>
+              <div className="card-pill-tag">
+                <span>✓ Format Terbuka Siap Edit</span>
+              </div>
+            </div>
+          </div>
         </div>
+      </section>
 
-        <div className="steps-container">
-          <div className="step-card">
-            <span className="step-badge">Langkah 1</span>
-            <h4>Pilih Jenjang &amp; Konteks</h4>
-            <p>Pilih kelas 1–6 (Fase A, B, atau C), mata pelajaran, topik materi, dan alokasi waktu pertemuan.</p>
+      {/* ── ALUR 4 LANGKAH PRAKTIS ── */}
+      <section id="alur" className="steps-section">
+        <div className="container">
+          <div className="section-header-center">
+            <span className="tag-kicker">Alur Kerja Cepat</span>
+            <h2>Hemat 70% Waktu Administrasi dalam 4 Langkah</h2>
+            <p>
+              Fokuskan energi Anda untuk berinteraksi dan membimbing murid di kelas, biar kami yang 
+              merapikan kerangka dokumen administratifnya.
+            </p>
           </div>
 
-          <div className="step-arrow">&rarr;</div>
+          <div className="workflow-steps-row">
+            <div className="workflow-card">
+              <div className="workflow-number">1</div>
+              <h4>Pilih Fase &amp; Mata Pelajaran</h4>
+              <p>Tentukan kelas (1–6 SD), topik materi mingguan, dan alokasi pertemuan tatap muka.</p>
+            </div>
 
-          <div className="step-card">
-            <span className="step-badge">Langkah 2</span>
-            <h4>Sinkronisasi Rujukan CP</h4>
-            <p>Sistem mencocokkan dokumen Capaian Pembelajaran resmi dan panduan asesmen yang berlaku.</p>
-          </div>
+            <div className="workflow-connector">&rarr;</div>
 
-          <div className="step-arrow">&rarr;</div>
+            <div className="workflow-card">
+              <div className="workflow-number">2</div>
+              <h4>Integrasi Rujukan CP Otomatis</h4>
+              <p>Sistem mengambil kutipan elemen dan panduan pembelajaran resmi yang relevan.</p>
+            </div>
 
-          <div className="step-card">
-            <span className="step-badge">Langkah 3</span>
-            <h4>Kompilasi Draf Ajar</h4>
-            <p>Draf tersusun lengkap: tujuan belajar, pemahaman bermakna, kegiatan berbasis diferensiasi, dan rubrik asesmen.</p>
-          </div>
+            <div className="workflow-connector">&rarr;</div>
 
-          <div className="step-arrow">&rarr;</div>
+            <div className="workflow-card">
+              <div className="workflow-number">3</div>
+              <h4>Kompilasi Draf &amp; Asesmen</h4>
+              <p>Modul ajar lengkap terkompilasi: tujuan, kegiatan diferensiasi, hingga rubrik evaluasi.</p>
+            </div>
 
-          <div className="step-card">
-            <span className="step-badge">Langkah 4</span>
-            <h4>Tinjau &amp; Ekspor Dokumen</h4>
-            <p>Periksa di editor internal, sesuaikan catatan guru, lalu unduh dokumen format DOCX siap pakai.</p>
+            <div className="workflow-connector">&rarr;</div>
+
+            <div className="workflow-card">
+              <div className="workflow-number">4</div>
+              <h4>Tinjau &amp; Ekspor DOCX</h4>
+              <p>Buka di editor, tambahkan catatan khusus guru Anda, lalu unduh format dokumen cetak.</p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ── TABEL PAKET & HARGA (PENTING UNTUK MIDTRANS KYC) ── */}
-      <section id="harga" className="section-block">
-        <div className="section-head text-center">
-          <span className="section-kicker">Biaya Transparan &amp; Terjangkau</span>
-          <h2>Pilihan Paket Layanan RuangRPP</h2>
-          <p>
-            Pilih paket yang paling sesuai dengan kebutuhan Anda atau sekolah. Tanpa biaya tersembunyi.
-            Didukung pembayaran online resmi dan aman melalui <strong>Midtrans Payment Gateway</strong>.
-          </p>
-        </div>
+      <section id="harga" className="pricing-section-v2">
+        <div className="container">
+          <div className="section-header-center">
+            <span className="tag-kicker">Harga Transparan Tanpa Biaya Tersembunyi</span>
+            <h2>Investasi Terjangkau untuk Ketenangan Mengajar</h2>
+            <p>
+              Pilih paket yang paling fleksibel untuk Anda atau sekolah Anda. Semua transaksi 
+              diproses secara aman dan instan dengan <strong>Midtrans Payment Gateway</strong>.
+            </p>
+          </div>
 
-        <div className="pricing-grid">
-          {PLANS.map((plan) => (
-            <div key={plan.id} className={`pricing-card ${plan.recommended ? 'recommended' : ''}`}>
-              {plan.badge && <span className="pricing-badge">{plan.badge}</span>}
-              <div className="pricing-header">
-                <h3>{plan.name}</h3>
-                <div className="price-tag">
-                  <span className="price-val">{plan.price}</span>
-                  <span className="price-period">/ {plan.period}</span>
+          <div className="plans-grid-4">
+            {PLANS.map((plan) => (
+              <div key={plan.id} className={`plan-card-v2 ${plan.recommended ? 'is-recommended' : ''}`}>
+                {plan.badge && <div className="plan-badge-pill">{plan.badge}</div>}
+
+                <div className="plan-header-area">
+                  <h3 className="plan-title">{plan.name}</h3>
+                  <div className="plan-price-wrap">
+                    <span className="plan-price-num">{plan.price}</span>
+                    <span className="plan-price-sub">/ {plan.period}</span>
+                  </div>
+                  <p className="plan-desc-text">{plan.desc}</p>
                 </div>
-                <p className="pricing-desc">{plan.desc}</p>
+
+                <div className="plan-feature-divider" />
+
+                <ul className="plan-features-list">
+                  {plan.features.map((feat, i) => (
+                    <li key={i}>
+                      <span className="check-bullet">✓</span>
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="plan-cta-area">
+                  <button
+                    type="button"
+                    className={`btn-plan-action ${plan.recommended ? 'primary' : 'outline'}`}
+                    onClick={() => handleOpenCheckout(plan)}
+                  >
+                    {plan.id === 'trial' ? 'Coba Sekarang (Gratis)' : `Pilih Paket (${plan.price})`}
+                  </button>
+                </div>
               </div>
+            ))}
+          </div>
 
-              <ul className="pricing-features">
-                {plan.features.map((feat, i) => (
-                  <li key={i}>
-                    <svg className="check-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
-                    <span>{feat}</span>
-                  </li>
-                ))}
-              </ul>
+          {/* Payment Badges & Midtrans Guarantee */}
+          <div className="gateway-assurance-box">
+            <div className="assurance-badges">
+              <span className="assurance-title">Metode Pembayaran Resmi:</span>
+              <div className="payment-logo-badges">
+                <span className="pay-chip">QRIS (GoPay, OVO, ShopeePay, DANA)</span>
+                <span className="pay-chip">BCA Virtual Account</span>
+                <span className="pay-chip">Mandiri Livin'</span>
+                <span className="pay-chip">BNI &amp; BRI Virtual Account</span>
+                <span className="pay-chip">Visa / MasterCard 3DS</span>
+              </div>
+            </div>
+            <p className="assurance-sub">
+              Sistem transaksi online terenkripsi 256-bit dan diawasi oleh Bank Indonesia melalui <strong>Midtrans</strong>. 
+              Layanan aktif otomatis tanpa perlu konfirmasi transfer manual.
+            </p>
+          </div>
+        </div>
+      </section>
 
-              <div className="pricing-action">
+      {/* ── FAQ ACCORDION ── */}
+      <section id="faq" className="faq-section">
+        <div className="container-narrow">
+          <div className="section-header-center">
+            <span className="tag-kicker">Bantuan &amp; Jawaban</span>
+            <h2>Pertanyaan yang Sering Diajukan Guru</h2>
+          </div>
+
+          <div className="faq-accordion">
+            {FAQS.map((faq, idx) => (
+              <div key={idx} className={`faq-card ${openFaq === idx ? 'expanded' : ''}`}>
                 <button
                   type="button"
-                  className={plan.recommended ? 'primary full-width' : 'secondary full-width'}
-                  onClick={() => handleOpenCheckout(plan)}
+                  className="faq-question-btn"
+                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                 >
-                  {plan.id === 'trial' ? 'Coba Sekarang (Gratis)' : `Pilih Paket (${plan.price})`}
+                  <span>{faq.q}</span>
+                  <span className="faq-toggle-icon">{openFaq === idx ? '−' : '+'}</span>
                 </button>
+                {openFaq === idx && (
+                  <div className="faq-answer-body">
+                    <p>{faq.a}</p>
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="payment-support-notice">
-          <span className="notice-label">Metode Pembayaran Resmi:</span>
-          <span className="payment-tags">
-            <span className="tag-item">QRIS (GoPay, OVO, ShopeePay, DANA)</span>
-            <span className="tag-item">Virtual Account (BCA, Mandiri, BNI, BRI, Permata)</span>
-            <span className="tag-item">Kartu Kredit / Debit (Visa, Mastercard, JCB)</span>
-          </span>
-          <p className="notice-sub">Diproses secara terenkripsi dan terverifikasi oleh Midtrans (Bank Indonesia Licensed).</p>
-        </div>
-      </section>
-
-      {/* ── KEBIJAKAN, REFUND & LEGALITAS (PERSYARATAN MIDTRANS) ── */}
-      <section id="kebijakan" className="section-block alt-bg">
-        <div className="section-head text-center">
-          <span className="section-kicker">Transparansi Konsumen</span>
-          <h2>Kebijakan Layanan &amp; Jaminan Pengembalian Dana</h2>
-          <p>Kami menjunjung tinggi keamanan data pengguna dan kepastian hak konsumen atas layanan digital.</p>
-        </div>
-
-        <div className="grid-3">
-          <div className="policy-box">
-            <h4>Kebijakan Pengembalian Dana (Refund)</h4>
-            <p>
-              Karena produk RuangRPP adalah produk digital yang aktif seketika, pengembalian dana 100% berlaku 
-              jika terjadi kendala teknis sistemik di platform kami dalam 3x24 jam sejak pembayaran yang menyebabkan 
-              layanan tidak dapat digunakan.
-            </p>
-            <button type="button" className="text-button" onClick={() => setLegalModal('refund')}>
-              Baca Rincian Refund &rarr;
-            </button>
-          </div>
-
-          <div className="policy-box">
-            <h4>Syarat &amp; Ketentuan Layanan (ToS)</h4>
-            <p>
-              Akses akun bersifat personal bagi guru atau instansi sekolah yang terdaftar. Pengguna berhak mengunduh, 
-              mengedit, dan mencetak dokumen modul ajar untuk kepentingan kegiatan belajar-mengajar resmi di kelas.
-            </p>
-            <button type="button" className="text-button" onClick={() => setLegalModal('terms')}>
-              Baca Syarat &amp; Ketentuan &rarr;
-            </button>
-          </div>
-
-          <div className="policy-box">
-            <h4>Kebijakan Privasi Data</h4>
-            <p>
-              Data profil, identitas murid (jika dicantumkan konteks umum), dan draf pembelajaran dienkripsi 
-              serta tidak diperjualbelikan kepada pihak ketiga manapun untuk keperluan periklanan.
-            </p>
-            <button type="button" className="text-button" onClick={() => setLegalModal('privacy')}>
-              Baca Kebijakan Privasi &rarr;
-            </button>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── KONTAK & LAYANAN BANTUAN ── */}
-      <section id="kontak" className="section-block">
-        <div className="contact-card">
-          <div className="contact-main">
-            <h3>Pusat Bantuan &amp; Kontak Operasional</h3>
-            <p>
-              Memerlukan bantuan aktivasi paket, konfirmasi pembayaran, atau memiliki pertanyaan seputar 
-              penerapan Kurikulum Nasional di RuangRPP? Tim kami siap melayani Anda.
-            </p>
-            
-            <div className="contact-details">
-              <div>
-                <strong>Email Dukungan Pelanggan:</strong>
-                <span>support@ruangrpp.id (Balasan dalam 1x24 jam kerja)</span>
-              </div>
-              <div>
-                <strong>Layanan Pesan Cepat (WhatsApp):</strong>
-                <span>+62 821-2345-6789 (Senin – Jumat, 08.00 – 17.00 WIB)</span>
-              </div>
-              <div>
-                <strong>Alamat Operasional:</strong>
-                <span>Indonesia (Layanan Berbasis Web SaaS Nasional)</span>
+      {/* ── CONTACT & SUPPORT STRIP ── */}
+      <section className="contact-banner">
+        <div className="container">
+          <div className="contact-inner-card">
+            <div className="contact-text">
+              <h3>Butuh Bantuan atau Ingin Bertanya?</h3>
+              <p>Tim dukungan RuangRPP siap mendampingi Anda di hari kerja (Senin–Jumat, 08.00–17.00 WIB).</p>
+              <div className="contact-badges-row">
+                <span className="c-chip">✉️ support@ruangrpp.id</span>
+                <span className="c-chip">💬 WhatsApp: +62 821-2345-6789</span>
+                <span className="c-chip">📍 Indonesia (Layanan Web SaaS Nasional)</span>
               </div>
             </div>
-          </div>
-
-          <div className="contact-aside">
-            <div className="aside-box">
-              <strong>Butuh Akun Tim / Pengelola?</strong>
-              <p>Penguji internal atau tim peninjau kurikulum dapat masuk ke konsol kerja melalui tautan berikut:</p>
-              <button type="button" className="secondary full-width" onClick={onOpenLogin}>
-                Masuk ke Konsol Tim &rarr;
-              </button>
+            <div className="contact-btn-box">
+              <a href="#harga" className="btn-primary-glow">
+                Pilih Paket Sekarang &rarr;
+              </a>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
-      <footer className="landing-footer">
-        <div className="footer-container">
-          <div className="footer-col">
-            <span className="brand-title">Ruang<span className="brand-accent">RPP</span></span>
-            <p className="footer-tagline">
-              Rancang Pembelajaran, Lebih Mudah. Platform digital penyusunan modul ajar SD berbasis 
-              Capaian Pembelajaran terstandar.
-            </p>
+      {/* ── SITE FOOTER ── */}
+      <footer className="site-footer">
+        <div className="container">
+          <div className="footer-top-grid">
+            <div className="footer-brand-col">
+              <span className="brand-main">Ruang<strong>RPP</strong></span>
+              <p className="footer-desc">
+                Rancang Pembelajaran, Lebih Mudah. Platform digital pendamping guru SD dalam menyusun 
+                draf modul ajar berlandaskan Capaian Pembelajaran resmi kurikulum nasional.
+              </p>
+            </div>
+
+            <div className="footer-links-col">
+              <strong>Navigasi Cepat</strong>
+              <ul>
+                <li><a href="#studio">Studio Modul</a></li>
+                <li><a href="#keunggulan">Prinsip &amp; Mutu</a></li>
+                <li><a href="#harga">Paket &amp; Biaya</a></li>
+                <li><button type="button" className="btn-footer-link" onClick={onOpenLogin}>Konsol Tim Pengelola</button></li>
+              </ul>
+            </div>
+
+            <div className="footer-links-col">
+              <strong>Kebijakan &amp; Legal</strong>
+              <ul>
+                <li><button type="button" className="btn-footer-link" onClick={() => setLegalModal('refund')}>Kebijakan Pengembalian Dana (Refund)</button></li>
+                <li><button type="button" className="btn-footer-link" onClick={() => setLegalModal('terms')}>Syarat &amp; Ketentuan Layanan</button></li>
+                <li><button type="button" className="btn-footer-link" onClick={() => setLegalModal('privacy')}>Kebijakan Privasi Data</button></li>
+              </ul>
+            </div>
+
+            <div className="footer-compliance-col">
+              <strong>Kepatuhan Transaksi</strong>
+              <p>
+                Transaksi diproses resmi melalui <strong>Midtrans Payment Gateway</strong>. Layanan berupa produk 
+                digital perangkat lunak yang diserahkan secara daring seketika setelah pembayaran terverifikasi.
+              </p>
+            </div>
           </div>
 
-          <div className="footer-col">
-            <strong>Navigasi Cepat</strong>
-            <ul>
-              <li><a href="#keunggulan">Prinsip Kerja</a></li>
-              <li><a href="#alur-kerja">Alur Penggunaan</a></li>
-              <li><a href="#harga">Paket Berlangganan</a></li>
-              <li><button type="button" className="link-button" onClick={onOpenLogin}>Akses Pengelola</button></li>
-            </ul>
-          </div>
-
-          <div className="footer-col">
-            <strong>Informasi Legal</strong>
-            <ul>
-              <li><button type="button" className="link-button" onClick={() => setLegalModal('refund')}>Kebijakan Pengembalian Dana</button></li>
-              <li><button type="button" className="link-button" onClick={() => setLegalModal('terms')}>Syarat &amp; Ketentuan</button></li>
-              <li><button type="button" className="link-button" onClick={() => setLegalModal('privacy')}>Kebijakan Privasi</button></li>
-            </ul>
-          </div>
-
-          <div className="footer-col">
-            <strong>Kepatuhan Transaksi</strong>
-            <p className="footer-compliance">
-              Sistem transaksi online diproses aman dengan gerbang pembayaran resmi <strong>Midtrans</strong>. 
-              Semua harga dalam mata uang Rupiah (IDR).
-            </p>
-          </div>
-        </div>
-
-        <div className="footer-bottom">
-          <div className="footer-bottom-content">
+          <div className="footer-bottom-bar">
             <span>&copy; {new Date().getFullYear()} RuangRPP. Hak Cipta Dilindungi Undang-Undang.</span>
             <span>Versi Staging &amp; Evaluasi Uji Coba</span>
           </div>
         </div>
       </footer>
 
-      {/* ── MODAL CHECKOUT & SIMULASI MIDTRANS ── */}
+      {/* ── MODAL CHECKOUT & MIDTRANS SIMULATOR ── */}
       {selectedPlan && (
         <dialog className="checkout-dialog" open>
           <div className="checkout-modal">
@@ -496,7 +774,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                         <input
                           required
                           type="text"
-                          placeholder="cth: Ibu Nurhasanah, S.Pd."
+                          placeholder="cth: Ibu Siti Aminah, S.Pd."
                           value={customer.name}
                           onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
                         />
@@ -506,7 +784,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                         <input
                           required
                           type="email"
-                          placeholder="cth: nurhasanah@guru.sd.belajar.id"
+                          placeholder="cth: sitiaminah@guru.sd.belajar.id"
                           value={customer.email}
                           onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
                         />
@@ -525,7 +803,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                         />
                       </label>
                       <label>
-                        Nama Sekolah / Gugus (Opsional)
+                        Nama Sekolah / Satuan Pendidikan (Opsional)
                         <input
                           type="text"
                           placeholder="cth: SDN 01 Rawamangun"
@@ -547,8 +825,8 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                           onChange={() => setPaymentMethod('qris')}
                         />
                         <div>
-                          <strong>QRIS (Instan)</strong>
-                          <small>GoPay, OVO, DANA, ShopeePay, BCA Mobile</small>
+                          <strong>QRIS (Instan Semua E-Wallet &amp; M-Banking)</strong>
+                          <small>GoPay, OVO, DANA, ShopeePay, BCA Mobile, Livin Mandiri</small>
                         </div>
                       </label>
 
@@ -560,8 +838,8 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                           onChange={() => setPaymentMethod('va')}
                         />
                         <div>
-                          <strong>Virtual Account Bank</strong>
-                          <small>BCA, Mandiri, BNI, BRI, Permata</small>
+                          <strong>Virtual Account Bank (Verifikasi Otomatis)</strong>
+                          <small>BCA, Mandiri, BNI, BRI, Permata Bank</small>
                         </div>
                       </label>
 
@@ -574,7 +852,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                         />
                         <div>
                           <strong>Kartu Kredit / Debit Online</strong>
-                          <small>Visa, MasterCard, JCB terverifikasi 3DS</small>
+                          <small>Visa, MasterCard, JCB terverifikasi 3D-Secure</small>
                         </div>
                       </label>
                     </div>
@@ -669,11 +947,11 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
               {legalModal === 'refund' && (
                 <div>
                   <p><strong>1. Ketentuan Umum Pengembalian Dana</strong></p>
-                  <p>Layanan RuangRPP merupakan produk digital berupa akses perangkat lunak dan token komputasi draf modul ajar yang diserahkan secara instan setelah pembayaran terkonfirmasi.</p>
+                  <p>Layanan RuangRPP merupakan produk digital berupa akses perangkat lunak dan token komputasi draf modul ajar yang diserahkan secara daring seketika setelah pembayaran terkonfirmasi.</p>
                   
                   <p><strong>2. Syarat Pengajuan Refund</strong></p>
                   <ul>
-                    <li>Pengguna mengalami kegagalan teknis permanen di sistem RuangRPP dalam kurun waktu 3x24 jam sejak transaksi dan kuota tidak dapat digunakan sama sekali.</li>
+                    <li>Pengguna mengalami kendala teknis sistemik permanen di platform RuangRPP dalam kurun waktu 3x24 jam sejak transaksi dan kuota tidak dapat digunakan sama sekali.</li>
                     <li>Terjadi transaksi ganda (*double charge*) yang disebabkan oleh gangguan jaringan gerbang pembayaran.</li>
                   </ul>
 
