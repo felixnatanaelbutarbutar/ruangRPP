@@ -583,9 +583,102 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
   font-size: 15px;
 }
 
+.lp-nav-hamburger {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--navy-rpp);
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 150ms ease;
+}
+
+.lp-nav-hamburger:hover {
+  background: var(--mint-tipis);
+}
+
+/* Mobile Dropdown Drawer */
+.lp-mobile-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-bottom: 1px solid var(--garis);
+  box-shadow: 0 16px 32px rgba(23, 43, 85, 0.12);
+  padding: 16px 20px 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: lp-menu-slide 180ms ease-out;
+  z-index: 99;
+}
+
+@keyframes lp-menu-slide {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.lp-mobile-menu-links {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lp-mobile-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--navy-rpp) !important;
+  border-radius: 8px;
+  text-decoration: none !important;
+  transition: background 120ms ease;
+}
+
+.lp-mobile-link:hover, .lp-mobile-link:active {
+  background: var(--mint-tipis);
+  color: var(--teal-dalam) !important;
+}
+
+.lp-mobile-link-arrow {
+  color: var(--abu-tinta);
+  font-size: 16px;
+}
+
+.lp-mobile-menu-cta {
+  padding-top: 8px;
+  border-top: 1px solid var(--garis);
+}
+
 @media (max-width: 860px) {
   .lp-nav-links {
     display: none;
+  }
+  .lp-nav-hamburger {
+    display: flex;
+  }
+  .lp-nav-right {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .lp-navbar {
+    height: 60px;
+  }
+  .lp-brand-logo {
+    height: 28px;
+  }
+  .lp-nav-cta {
+    height: 36px;
+    padding: 0 13px;
+    font-size: 13.5px;
   }
 }
 
@@ -678,17 +771,21 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
   .lp-hero::before {
     inset: auto 0 0 0;
     height: 52%;
+    border-top: 1px solid var(--garis);
   }
   .lp-hero-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 32px;
   }
   .lp-hero-copy, .lp-hero-demo {
     grid-column: 1;
     margin-left: 0;
+    min-width: 0;
+    max-width: 100%;
   }
   .lp-hero h1 {
     font-size: 34px;
+    max-width: none;
   }
   .lp-hero-cta-group {
     flex-direction: column;
@@ -700,6 +797,41 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
   }
 }
 
+@media (max-width: 640px) {
+  .lp-hero {
+    padding-block: 28px 36px;
+  }
+  .lp-hero::before {
+    height: 56%;
+  }
+  .lp-hero-grid {
+    gap: 20px;
+  }
+  .lp-hero h1 {
+    font-size: clamp(25px, 6.8vw, 32px);
+    line-height: 1.18;
+    margin-bottom: 12px;
+  }
+  .lp-hero .lp-body-lg {
+    font-size: 15.5px;
+    line-height: 1.55;
+    margin-bottom: 18px;
+  }
+  .lp-hero-cta-group {
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .lp-hero-cta-group .lp-btn-primary,
+  .lp-hero-cta-group .lp-btn-secondary {
+    height: 48px;
+    font-size: 15px;
+  }
+  .lp-hero-trust {
+    font-size: 13px;
+    line-height: 1.45;
+  }
+}
+
 /* ── TAB CONTOH DI ATAS LEMBAR (§5.2 & §8) ── */
 .lp-hero-tabs-bar {
   display: flex;
@@ -707,6 +839,8 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
   justify-content: space-between;
   gap: 8px;
   margin-bottom: 12px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .lp-hero-tab-list {
@@ -715,6 +849,9 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
   gap: 8px;
   overflow-x: auto;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .lp-hero-tab-list::-webkit-scrollbar {
@@ -775,6 +912,37 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
   font-weight: 600;
 }
 
+@media (max-width: 640px) {
+  .lp-hero-tabs-bar {
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .lp-hero-tab-list {
+    flex: 1;
+    min-width: 0;
+    padding-bottom: 2px;
+  }
+  .lp-hero-tab {
+    height: 36px;
+    padding: 0 12px;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .lp-hero-tab-replay {
+    flex-shrink: 0;
+    font-size: 12px;
+    padding: 6px 10px;
+    background: rgba(22, 165, 150, 0.08);
+    border-radius: 9999px;
+  }
+  .lp-hero-custom-prompt-note {
+    text-align: center;
+    font-size: 13px;
+    margin-top: 14px;
+    padding-inline: 10px;
+  }
+}
+
 /* ── LEMBAR DOKUMEN RPP (§6: Tinggi 540px, Lipatan 24px, Fade Bawah) ── */
 .rpp-wrap {
   position: relative;
@@ -799,8 +967,9 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
 
 @media (max-width: 640px) {
   .rpp-sheet {
-    height: 420px;
-    padding: 24px 20px;
+    height: 380px;
+    padding: 18px 16px;
+    clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%);
   }
 }
 
@@ -878,7 +1047,9 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
 
 @media (max-width: 640px) {
   .rpp-title {
-    font-size: 21px;
+    font-size: 19px;
+    line-height: 1.3;
+    margin-bottom: 12px;
   }
 }
 
@@ -913,10 +1084,14 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
   color: var(--navy-rpp);
 }
 
-@media (max-width: 500px) {
-  .rpp-id-row {
-    grid-template-columns: 110px 1fr;
+@media (max-width: 640px) {
+  .rpp-identitas-table {
+    margin: 10px 0 14px 0;
     font-size: 12.5px;
+  }
+  .rpp-id-row {
+    grid-template-columns: 95px 1fr;
+    padding: 3px 0;
   }
 }
 
@@ -949,6 +1124,20 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
   margin-top: 4px;
 }
 
+@media (max-width: 640px) {
+  .rpp-section-block {
+    margin-bottom: 14px;
+  }
+  .rpp-doc-h4 {
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+  .rpp-doc-p {
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+}
+
 /* ── CARA KERJA (§5.3: 3 Baris Horizontal Berurutan) ── */
 .lp-steps-container {
   display: grid;
@@ -962,6 +1151,7 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
   .lp-steps-container {
     grid-template-columns: 1fr;
     gap: var(--s4);
+    margin-top: 20px;
   }
 }
 
@@ -994,7 +1184,48 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
   margin: 0;
 }
 
+@media (max-width: 640px) {
+  .lp-step-row {
+    padding-left: 16px;
+    border-left-width: 3px;
+    border-left-color: var(--teal-ruang);
+  }
+  .lp-step-num {
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+  .lp-step-title {
+    font-size: 16.5px;
+    margin-bottom: 6px;
+  }
+  .lp-step-desc {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+}
+
 /* ── CONTOH DOKUMEN BESAR + ANOTASI (§5.4) ── */
+.lp-annotated-tabs-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 640px) {
+  .lp-annotated-tabs-bar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .lp-annotated-tabs-bar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 .lp-annotated-wrap {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
@@ -1006,6 +1237,14 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
 @media (max-width: 960px) {
   .lp-annotated-wrap {
     grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .lp-annotated-wrap {
+    gap: 16px;
+    margin-top: 16px;
   }
 }
 
@@ -1040,6 +1279,24 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
   margin: 0;
 }
 
+@media (max-width: 640px) {
+  .lp-annotated-points {
+    gap: 12px;
+  }
+  .lp-annotated-item {
+    padding: 14px 16px;
+    border-radius: 8px;
+  }
+  .lp-annotated-item h4 {
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+  .lp-annotated-item p {
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+}
+
 /* ── ANDA YANG MENGATUR (§5.5) ── */
 .lp-control-grid {
   display: grid;
@@ -1051,6 +1308,8 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
 @media (max-width: 820px) {
   .lp-control-grid {
     grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 20px;
   }
 }
 
@@ -1077,6 +1336,21 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
   margin: 0;
 }
 
+@media (max-width: 640px) {
+  .lp-control-card {
+    padding: 20px 18px;
+    border-radius: 12px;
+  }
+  .lp-control-card h3 {
+    font-size: 16.5px;
+    margin-bottom: 6px;
+  }
+  .lp-control-card p {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+}
+
 /* ── PAKET & BIAYA (§5.6: Maks 3 Paket, Border Teal untuk Rekomendasi) ── */
 .lp-pricing-grid {
   display: grid;
@@ -1088,6 +1362,8 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
 @media (max-width: 960px) {
   .lp-pricing-grid {
     grid-template-columns: 1fr;
+    gap: 18px;
+    margin-top: 20px;
   }
 }
 
@@ -1154,6 +1430,32 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
   flex-shrink: 0;
 }
 
+@media (max-width: 640px) {
+  .lp-price-card {
+    padding: 22px 18px;
+    border-radius: 14px;
+  }
+  .lp-price-name {
+    font-size: 17.5px;
+  }
+  .lp-price-val {
+    font-size: 28px;
+    margin: 8px 0 2px 0;
+  }
+  .lp-price-period {
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+  .lp-price-features {
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .lp-price-features li {
+    font-size: 13.5px;
+    line-height: 1.45;
+  }
+}
+
 /* ── FAQ ACCORDION (§5.7 & §9) ── */
 .lp-faq-container {
   max-width: 760px;
@@ -1196,6 +1498,22 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
   text-align: left;
 }
 
+@media (max-width: 640px) {
+  .lp-faq-container {
+    margin-top: 16px;
+  }
+  .lp-faq-question {
+    padding: 16px 0;
+    font-size: 15px;
+    gap: 12px;
+  }
+  .lp-faq-answer {
+    font-size: 14px;
+    line-height: 1.6;
+    padding-bottom: 16px;
+  }
+}
+
 /* ── CTA PENUTUP & FOOTER (§5.8) — SATU-SATUNYA BAGIAN GELAP ── */
 .lp-dark-block {
   background: var(--navy-rpp);
@@ -1221,6 +1539,12 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
 .lp-cta-inner .lp-body-lg {
   color: #d1d5db;
   margin-bottom: var(--s4);
+}
+
+.lp-cta-btn-group {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
 }
 
 .lp-dark-block .lp-btn-secondary {
@@ -1297,6 +1621,65 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
   color: #9ca3af;
 }
 
+@media (max-width: 640px) {
+  .lp-dark-block {
+    padding-top: 48px;
+  }
+  .lp-cta-inner {
+    padding-bottom: 32px;
+    margin-bottom: 32px;
+  }
+  .lp-cta-inner .lp-display {
+    font-size: clamp(24px, 6.5vw, 30px);
+    line-height: 1.22;
+    margin-bottom: 12px;
+  }
+  .lp-cta-inner .lp-body-lg {
+    font-size: 15px;
+    line-height: 1.55;
+    margin-bottom: 18px;
+  }
+  .lp-cta-btn-group {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+  .lp-cta-btn-group .lp-btn-primary,
+  .lp-cta-btn-group .lp-btn-secondary {
+    width: 100%;
+    height: 46px;
+    font-size: 14.5px;
+    justify-content: center;
+  }
+  .lp-footer-grid {
+    gap: 22px;
+    padding-bottom: 24px;
+  }
+  .lp-footer-brand img {
+    height: 30px !important;
+  }
+  .lp-footer-brand p {
+    font-size: 13.5px;
+    line-height: 1.55;
+    max-width: none;
+  }
+  .lp-footer-col h5 {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  .lp-footer-col a, .lp-footer-col button {
+    font-size: 13.5px;
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .lp-footer-bottom {
+    padding: 18px 0;
+    font-size: 12.5px;
+    text-align: center;
+  }
+}
+
 /* ── MODALS (Checkout & Legal) ── */
 .lp-modal-overlay {
   position: fixed;
@@ -1346,6 +1729,28 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
   cursor: pointer;
 }
 
+@media (max-width: 640px) {
+  .lp-modal-overlay {
+    padding: 16px;
+  }
+  .lp-modal-content {
+    padding: 20px 16px;
+    border-radius: 14px;
+    max-height: 85vh;
+  }
+  .lp-modal-title {
+    font-size: 17.5px;
+  }
+  .lp-modal-close {
+    font-size: 26px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
 /* Staging Notice & Quota Chips (§5.6) */
 .lp-staging-notice {
   background: var(--mint-tipis);
@@ -1362,6 +1767,17 @@ details summary { color:var(--text-muted); font-size:12px; cursor:pointer; }
   color: var(--navy-rpp);
   line-height: 1.5;
   text-align: left;
+}
+
+@media (max-width: 640px) {
+  .lp-staging-notice {
+    padding: 12px 14px;
+    font-size: 13px;
+    gap: 10px;
+    margin-top: 14px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+  }
 }
 
 .lp-quota-chip {

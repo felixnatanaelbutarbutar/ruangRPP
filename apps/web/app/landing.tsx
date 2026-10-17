@@ -179,6 +179,9 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
   // FAQ Accordion State
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
+  // Mobile Menu State
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+
   // Legal Modal State
   const [legalModal, setLegalModal] = useState<'terms' | 'privacy' | 'refund' | null>(null);
 
@@ -257,8 +260,80 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
             <a href="/login" className="lp-btn-primary lp-nav-cta">
               Masuk guru
             </a>
+
+            <button
+              type="button"
+              className="lp-nav-hamburger"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? 'Tutup navigasi' : 'Buka navigasi'}
+              aria-expanded={mobileMenuOpen}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                {mobileMenuOpen ? (
+                  <>
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </>
+                ) : (
+                  <>
+                    <line x1="4" y1="7" x2="20" y2="7" />
+                    <line x1="4" y1="12" x2="20" y2="12" />
+                    <line x1="4" y1="17" x2="20" y2="17" />
+                  </>
+                )}
+              </svg>
+            </button>
           </div>
         </div>
+
+        {/* Mobile Navigation Drawer / Menu */}
+        {mobileMenuOpen && (
+          <div className="lp-mobile-menu" role="dialog" aria-modal="true">
+            <nav className="lp-mobile-menu-links">
+              <a
+                href="#contoh"
+                onClick={() => setMobileMenuOpen(false)}
+                className="lp-mobile-link"
+              >
+                <span>Contoh dokumen</span>
+                <span className="lp-mobile-link-arrow">&rarr;</span>
+              </a>
+              <a
+                href="#cara-kerja"
+                onClick={() => setMobileMenuOpen(false)}
+                className="lp-mobile-link"
+              >
+                <span>Cara kerja</span>
+                <span className="lp-mobile-link-arrow">&rarr;</span>
+              </a>
+              <a
+                href="#harga"
+                onClick={() => setMobileMenuOpen(false)}
+                className="lp-mobile-link"
+              >
+                <span>Paket &amp; biaya</span>
+                <span className="lp-mobile-link-arrow">&rarr;</span>
+              </a>
+              <a
+                href="#faq"
+                onClick={() => setMobileMenuOpen(false)}
+                className="lp-mobile-link"
+              >
+                <span>Pertanyaan (FAQ)</span>
+                <span className="lp-mobile-link-arrow">&rarr;</span>
+              </a>
+            </nav>
+            <div className="lp-mobile-menu-cta">
+              <a
+                href="/login"
+                className="lp-btn-primary"
+                style={{ width: '100%', height: 46 }}
+              >
+                Masuk ruang guru
+              </a>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* ── 2. HERO SECTION (§5.2: 12 Kolom, Meja Bleed, Tanpa Form Panel) ── */}
@@ -453,7 +528,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
           </p>
 
           {/* Subject Switcher */}
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 24 }}>
+          <div className="lp-annotated-tabs-bar">
             <button
               type="button"
               className={`lp-hero-tab ${activeAnnotatedKey === 'ipas' ? 'active' : ''}`}
@@ -744,7 +819,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
             <p className="lp-body-lg">
               Siapkan akun dan lihat rancangan ruang kerja guru. Pembuatan draf dibuka setelah sumber dan generator selesai diuji.
             </p>
-            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+            <div className="lp-cta-btn-group">
               <a href="/login" className="lp-btn-primary" style={{ background: '#16A596', borderColor: '#16A596' }}>
                 Masuk ke ruang guru
               </a>
