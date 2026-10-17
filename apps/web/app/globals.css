@@ -14,6 +14,54 @@
   --accent:#333; --accent-hover:#161616;
 }
 .sidebar { overflow-y:auto; }
+.teacher-login { min-height:100vh; max-width:480px; margin:auto; padding:40px 24px; display:flex; flex-direction:column; justify-content:center; gap:32px; }
+.teacher-login-box { display:grid; gap:22px; }
+.teacher-login-box h1 { font-size:28px; }
+.teacher-login-box > p { color:var(--text-secondary); }
+.teacher-login-box .login-note { margin:0; display:grid; gap:8px; }
+.teacher-feedback { display:grid; gap:12px; }
+.google-button { min-height:44px; }
+.google-button.busy { pointer-events:none; opacity:.6; }
+.teacher-header { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:20px 32px; border-bottom:1px solid var(--border); }
+.teacher-header img,.teacher-login img { max-width:100%; object-fit:contain; }
+.teacher-content { max-width:1040px; padding:40px 24px; margin:auto; display:grid; gap:24px; }
+.teacher-content .page-heading { margin-bottom:0; }
+.billing-section { display:grid; gap:20px; scroll-margin-top:24px; min-width:0; }
+.billing-section h2 { margin:0; font-size:22px; }
+.billing-balance { display:flex; align-items:center; gap:28px; border-block:1px solid #dedede; padding:20px 0; }
+.billing-balance > div { min-width:120px; }
+.billing-balance span { display:block; font-size:13px; color:#666; }
+.billing-balance strong { display:block; font-size:30px; margin-top:5px; }
+.billing-balance p { font-size:13px; color:#666; max-width:360px; margin-left:auto; }
+.billing-plans { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.billing-plan { padding:22px; display:grid; gap:12px; }
+.billing-plan h3,.billing-plan p { margin:0; }
+.billing-plan .billing-price { font-size:28px; font-weight:600; letter-spacing:-.5px; }
+.billing-plan .secondary { margin-top:8px; }
+.billing-confirm h3 { margin-top:0; }
+.billing-confirm .button-group { margin-top:18px; }
+.billing-order-id { font:11px ui-monospace,monospace; overflow-wrap:anywhere; }
+.billing-actions { display:grid; justify-items:start; gap:9px; min-width:120px; }
+.billing-toolbar { display:flex; align-items:end; justify-content:space-between; gap:16px; }
+.billing-toolbar label { display:grid; gap:6px; font-size:13px; }
+.billing-table { min-width:680px; }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+@media(max-width:650px) { .billing-plans { grid-template-columns:1fr; } .billing-balance { flex-wrap:wrap; gap:18px; } .billing-balance p { margin:0; max-width:none; } }
+.teacher-content h1,.account-details dd { overflow-wrap:anywhere; }
+.teacher-section { padding:24px; display:grid; gap:18px; justify-items:start; }
+.teacher-section p { max-width:70ch; color:var(--text-secondary); }
+.account-details { margin:0; padding:0 24px; }
+.account-details > div { display:grid; grid-template-columns:160px minmax(0,1fr); gap:20px; border-bottom:1px solid var(--border); padding:18px 0; }
+.account-details > div:last-child { border-bottom:0; }
+.account-details dt { color:var(--text-muted); }
+.account-details dd { margin:0; }
+.privacy-content { max-width:800px; }
+@media(max-width:600px) {
+  .teacher-header { padding:16px; }
+  .teacher-content { padding:24px 18px; }
+  .teacher-header img { height:28px; }
+  .account-details > div { grid-template-columns:1fr; gap:5px; }
+}
 .admin-panels { display:grid; gap:22px; }
 .admin-panels .stats { margin-bottom:0; }
 .settings-form { padding:24px 20px; border-bottom:1px solid var(--border); display:grid; gap:16px; max-width:720px; }

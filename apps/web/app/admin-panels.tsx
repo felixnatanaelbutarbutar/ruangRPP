@@ -1,5 +1,6 @@
 'use client';
 import { FormEvent, useCallback, useEffect, useState } from 'react';
+import { AdminFinance } from './billing-panels';
 
 type Requester = (path: string, options?: RequestInit) => Promise<any>;
 type Account = { id: string; name: string; email: string; role: string; uploads: number; last_login: string | null };
@@ -50,7 +51,6 @@ export function AdminPanels({ view, api, openDocument }: { view: AdminView; api:
   const [historyLoading, setHistoryLoading] = useState(false);
   const [events, setEvents] = useState<Event[]>([]);
   const [models, setModels] = useState<ModelData | null>(null);
-  const [finance, setFinance] = useState<{ status: string } | null>(null);
   const [query, setQuery] = useState('');
   const [search, setSearch] = useState('');
   const [actor, setActor] = useState('');
@@ -82,8 +82,7 @@ export function AdminPanels({ view, api, openDocument }: { view: AdminView; api:
           }
         }
       } else if (view === 'finance') {
-
-        const data = await api('/admin/finance'); if (current) setFinance(data);
+        // The finance panel manages its environment filter and pagination.
       } else {
         const accounts = await api('/admin/users'); if (current) setUsers(accounts.items);
         if (view === 'users') {
@@ -390,11 +389,7 @@ export function AdminPanels({ view, api, openDocument }: { view: AdminView; api:
       <div className="inline-note">Riwayat pembuatan modul oleh guru belum tersedia karena generator belum terhubung.</div>
     </section>}
 
-    {view === 'finance' && finance && <>
-      <div className="stats">{['Uang masuk', 'Pembayaran berhasil', 'Pengembalian dana', 'Biaya pemakaian AI'].map(label => <div className="stat" key={label}><div>{label}</div><strong>—</strong><small>Data belum terhubung</small></div>)}</div>
-      <section className="panel"><div className="panel-head"><div><h2>Transaksi</h2><p>Pencatatan pembayaran pelanggan RuangRPP.</p></div><span className="badge">Belum terhubung</span></div><div className="empty"><h3>Belum ada sumber data pembayaran</h3><p>Pemasukan akan ditampilkan setelah penyedia pembayaran dan pencatatan transaksi diintegrasikan. Tanda — berarti data belum tersedia.</p></div></section>
-      <section className="panel"><div className="panel-head"><h2>Kesiapan pencatatan</h2></div><div className="status-list"><div><strong>Pembayaran & langganan</strong><span>Belum diintegrasikan</span></div><div><strong>Penggunaan token & biaya AI</strong><span>Menunggu integrasi generator</span></div><div><strong>Rekonsiliasi & pengembalian dana</strong><span>Tahap monetisasi</span></div></div></section>
-    </>}
+    {view === 'finance' && <AdminFinance />}
   </div>;
 }
 
@@ -406,10 +401,10 @@ export function OperationsSummary({ api, navigate }: { api: Requester; navigate:
     return Promise.all([api('/admin/users'), api('/admin/models')]);
   }, [api]);
   useEffect(() => { let live = true; load().then(([u, m]) => { if (live) setData({ users: u.items.length, model: m.items.find((p: Profile) => p.id === m.default_id)?.model || null }); }).catch(() => { if (live) setFailed(true); }); return () => { live = false; }; }, [load]);
-  return <section className="panel operations-summary"><div className="panel-head"><div><h2>Operasional platform</h2><p>Sumber sedang dikumpulkan. Generator dan pembayaran belum terhubung.</p></div></div>{failed ? <div className="inline-note" role="alert">Ringkasan operasional gagal dimuat. Buka menu terkait untuk mencoba lagi.</div> : <div className="operation-links">
+  return <section className="panel operations-summary"><div className="panel-head"><div><h2>Operasional platform</h2><p>Kelola akun, model, transaksi, dan aktivitas platform.</p></div></div>{failed ? <div className="inline-note" role="alert">Ringkasan operasional gagal dimuat. Buka menu terkait untuk mencoba lagi.</div> : <div className="operation-links">
     <button onClick={() => navigate('users')}><span>Tim internal</span><strong>{data ? `${data.users} akun` : 'Memuat...'}</strong><small>Lihat akun tim →</small></button>
     <button onClick={() => navigate('models')}><span>Model default</span><strong>{data ? data.model || 'Belum dipilih' : 'Memuat...'}</strong><small>Pengaturan LLM →</small></button>
-    <button onClick={() => navigate('finance')}><span>Uang masuk</span><strong>Belum tersedia</strong><small>Lihat keuangan →</small></button>
+    <button onClick={() => navigate('finance')}><span>Pembayaran</span><strong>Riwayat transaksi</strong><small>Lihat keuangan →</small></button>
     <button onClick={() => navigate('activity')}><span>Riwayat</span><strong>Aktivitas tim</strong><small>Lihat catatan →</small></button>
   </div>}</section>;
 }

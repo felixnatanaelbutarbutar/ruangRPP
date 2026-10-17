@@ -158,11 +158,6 @@ def build_admin_router(admin, audit):
                               for e in events], 'total': total, 'page': page, 'limit': limit,
                     'generation_history_available': False}
 
-    @router.get('/finance')
-    def finance():
-        return {'status': 'not_connected', 'currency': 'IDR', 'revenue': None,
-                'transactions': [], 'llm_cost': None}
-
     @router.get('/models')
     def models():
         with Session() as db:

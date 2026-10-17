@@ -34,11 +34,19 @@ services:
     environment:
       DATABASE_URL: postgresql+psycopg://ruangrpp:${POSTGRES_PASSWORD}@db:5432/ruangrpp
       STORAGE_DIR: /data/uploads
-      ALLOWED_ORIGINS: http://localhost:${WEB_PORT:-3000},http://127.0.0.1:${WEB_PORT:-3000}
-      COOKIE_SECURE: "0"
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:${WEB_PORT:-3000},http://127.0.0.1:${WEB_PORT:-3000}}
+      COOKIE_SECURE: ${COOKIE_SECURE:-0}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
       CUSTOM_LLM_API_KEY: ${CUSTOM_LLM_API_KEY:-}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      MIDTRANS_IS_PRODUCTION: ${MIDTRANS_IS_PRODUCTION:-false}
+      MIDTRANS_SERVER_KEY: ${MIDTRANS_SERVER_KEY:-}
+      MIDTRANS_CLIENT_KEY: ${MIDTRANS_CLIENT_KEY:-}
+      MIDTRANS_SANDBOX_SERVER_KEY: ${MIDTRANS_SANDBOX_SERVER_KEY:-}
+      MIDTRANS_PRODUCTION_SERVER_KEY: ${MIDTRANS_PRODUCTION_SERVER_KEY:-}
+      PAYMENTS_ENABLED: ${PAYMENTS_ENABLED:-false}
+      PUBLIC_APP_URL: ${PUBLIC_APP_URL:-http://localhost:${WEB_PORT:-3000}}
     volumes:
       - source_files:/data/uploads
     depends_on:

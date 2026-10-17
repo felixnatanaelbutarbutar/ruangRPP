@@ -73,7 +73,12 @@ def audit(db, user, action, document_id=None):
 
 
 from .admin_api import build_admin_router
+from .teacher_auth import router as teacher_router
+from .billing import router as billing_router, build_admin_billing_router
 app.include_router(build_admin_router(admin, audit))
+app.include_router(teacher_router)
+app.include_router(billing_router)
+app.include_router(build_admin_billing_router(admin))
 
 
 def payload(d, detail=False):

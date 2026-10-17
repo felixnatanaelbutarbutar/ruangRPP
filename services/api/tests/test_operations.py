@@ -6,10 +6,10 @@ from test_admin import database, client, sign_in
 
 
 def test_operations_require_admin(client):
-    for path in ['users', 'activity', 'finance', 'models']:
+    for path in ['users', 'teachers', 'activity', 'finance', 'models']:
         assert client.get('/api/v1/admin/' + path).status_code == 401
     sign_in(client, 'collector')
-    for path in ['users', 'activity', 'finance', 'models']:
+    for path in ['users', 'teachers', 'activity', 'finance', 'models']:
         assert client.get('/api/v1/admin/' + path).status_code == 403
     assert client.post('/api/v1/admin/models', json={'provider': 'openai', 'model': 'synthetic'}).status_code == 403
     assert client.put('/api/v1/admin/models/unknown/default').status_code == 403
@@ -67,7 +67,7 @@ def test_activity_uses_actor_id_not_duplicate_names_and_paginates(client):
     assert len(users['items']) == 2
     assert all(u['last_login'] for u in users['items'])
     assert 'password_hash' not in str(users) and 'token_hash' not in str(users)
-    assert users['teacher_accounts_available'] is False
+    assert users['teacher_accounts_available'] is True
 
 
 def test_finance_unavailable_is_not_zero_revenue(client):

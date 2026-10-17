@@ -57,4 +57,4 @@ async function proxy(request: NextRequest, context: { params: Promise<{ path: st
     return NextResponse.json({ detail: tooLarge ? 'Berkas maksimal 128 MiB.' : 'Layanan data belum terhubung atau melewati batas waktu. Periksa daftar dokumen sebelum mengulang unggahan.' }, { status: tooLarge ? 413 : 503 });
   }
 }
-export { proxy as GET, proxy as POST, proxy as PATCH, proxy as PUT };
+export { proxy as GET, proxy as POST, proxy as PATCH, proxy as PUT, proxy as DELETE };

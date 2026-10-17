@@ -97,3 +97,56 @@ class AdminSetting(Base):
     __tablename__ = 'admin_settings'
     key: Mapped[str] = mapped_column(String(40), primary_key=True)
     value: Mapped[str] = mapped_column(String(150), default='')
+
+
+class Teacher(Base):
+    __tablename__ = 'teacher_accounts'
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    google_sub: Mapped[str] = mapped_column(String(255), unique=True)
+    email: Mapped[str] = mapped_column(String(254))
+    name: Mapped[str] = mapped_column(String(120))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    last_login: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class TeacherSession(Base):
+    __tablename__ = 'teacher_sessions'
+    token_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
+    teacher_id: Mapped[str] = mapped_column(String(36), index=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class GoogleChallenge(Base):
+    __tablename__ = 'google_login_challenges'
+    binding_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
+    nonce_hash: Mapped[str] = mapped_column(String(64))
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+
+
+class PaymentOrder(Base):
+    __tablename__ = 'payment_orders'
+    id: Mapped[str] = mapped_column(String(50), primary_key=True)
+    teacher_id: Mapped[str] = mapped_column(String(36), index=True)
+    environment: Mapped[str] = mapped_column(String(15), index=True)
+    plan_id: Mapped[str] = mapped_column(String(30))
+    plan_name: Mapped[str] = mapped_column(String(80))
+    amount: Mapped[int] = mapped_column(Integer)
+    credits: Mapped[int] = mapped_column(Integer)
+    status: Mapped[str] = mapped_column(String(30), default='creating', index=True)
+    provider_status: Mapped[str] = mapped_column(String(40), default='')
+    checkout_url: Mapped[str] = mapped_column(Text, default='')
+    transaction_id: Mapped[str] = mapped_column(String(100), default='')
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    checked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class QuotaGrant(Base):
+    __tablename__ = 'quota_grants'
+    # One immutable grant per order. Refunds suspend it; never create a second grant.
+    order_id: Mapped[str] = mapped_column(String(50), primary_key=True)
+    teacher_id: Mapped[str] = mapped_column(String(36), index=True)
+    environment: Mapped[str] = mapped_column(String(15), index=True)
+    credits: Mapped[int] = mapped_column(Integer)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    suspended_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)

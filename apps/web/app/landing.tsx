@@ -142,27 +142,27 @@ const PLANS: Plan[] = [
 const FAQS = [
   {
     q: 'Apakah hasilnya bisa saya edit?',
-    a: 'Tentu saja. Hasil yang disusun ruangRPP adalah draf kerja awal. Anda memiliki kendali pedagogis penuh untuk menyesuaikan kalimat, menambah kegiatan lokal sekolah, atau mengubah instrumen asesmen langsung di editor sebelum diunduh.',
+    a: 'Editor draf sedang direncanakan. Saat generator tersedia, guru tetap perlu memeriksa dan menyesuaikan hasil dengan kebutuhan kelas.',
   },
   {
     q: 'Sesuai kurikulum apa?',
-    a: 'Sesuai Kurikulum Nasional (Kurikulum Merdeka). Kami berlandaskan secara ketat pada regulasi resmi Capaian Pembelajaran terbaru sehingga setiap tujuan pembelajaran memiliki rujukan elemen yang sah.',
+    a: 'Tim sedang memeriksa dokumen kurikulum nasional untuk SD. Cakupan mata pelajaran dan fase baru diaktifkan setelah sumber dan template ditinjau.',
   },
   {
     q: 'Format apa yang bisa diunduh?',
-    a: 'Anda dapat mengunduh dokumen dalam format Microsoft Word (.DOCX) dan PDF. Tata letak dan penomoran telah disesuaikan dengan format standar dinas pendidikan agar siap dicetak atau ditelaah kepala sekolah.',
+    a: 'Ekspor Word (.DOCX) dan PDF direncanakan setelah generator dan editor stabil. Contoh di halaman ini masih berupa ilustrasi tampilan.',
   },
   {
     q: 'Apakah data kelas dan kuota saya disimpan?',
-    a: 'Ya. Draf yang telah Anda buat dan sisa kuota generate tersimpan aman di akun Anda. Kuota tidak memiliki tanggal kedaluwarsa sehingga tidak akan hangus bila belum sempat dipakai.',
+    a: 'Akun yang berhasil masuk dengan Google tersimpan di RuangRPP. Penyimpanan draf dan pengelolaan kuota belum diaktifkan.',
   },
   {
     q: 'Bagaimana sistem hitungan biaya per-generate?',
-    a: 'Biaya dihitung per-generate (per draf), bukan langganan bulanan. Anda membeli paket kuota (mulai Rp 1.300 – Rp 1.660 per draf) dan kuota berkurang 1 setiap kali Anda menyusun draf modul ajar baru. Anda tidak perlu khawatir membayar biaya berulang saat masa libur sekolah.',
+    a: 'Paket dan angka di halaman ini masih rancangan. Harga, kuota, dan ketentuan akhir akan ditetapkan setelah generator diuji bersama guru.',
   },
   {
     q: 'Apakah saat ini pembayaran sudah memotong uang riil?',
-    a: 'Belum. Saat ini platform ruangRPP berada dalam fase staging & development (uji coba sistem). Gerbang pembayaran Midtrans berjalan dalam mode Sandbox (simulasi dummy), sehingga Anda dapat menguji seluruh proses checkout dan aktivasi kuota secara gratis tanpa pemotongan saldo asli.',
+    a: 'Periksa mode pembayaran di ruang guru. Sandbox hanya untuk simulasi, sedangkan mode produksi menggunakan uang nyata. Pembelian tersedia setelah dibuka pengelola; kuota masuk setelah pembayaran diverifikasi.',
   },
 ];
 
@@ -178,12 +178,6 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
 
   // FAQ Accordion State
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-
-  // Checkout Simulator Modal
-  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
-  const [checkoutStep, setCheckoutStep] = useState<'form' | 'processing' | 'success'>('form');
-  const [paymentMethod, setPaymentMethod] = useState<'qris' | 'va' | 'card'>('qris');
-  const [customer, setCustomer] = useState({ name: '', email: '', phone: '', school: '' });
 
   // Legal Modal State
   const [legalModal, setLegalModal] = useState<'terms' | 'privacy' | 'refund' | null>(null);
@@ -231,19 +225,6 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
     };
   }, []);
 
-  const handleOpenCheckout = (plan: Plan) => {
-    setSelectedPlan(plan);
-    setCheckoutStep('form');
-  };
-
-  const handleProcessPayment = (e: React.FormEvent) => {
-    e.preventDefault();
-    setCheckoutStep('processing');
-    setTimeout(() => {
-      setCheckoutStep('success');
-    }, 1200);
-  };
-
   const generatingLabel =
     demoStep === 0
       ? 'identitas modul'
@@ -273,8 +254,8 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
               <a href="#faq">FAQ</a>
             </nav>
 
-            <a href="#harga" className="lp-btn-primary lp-nav-cta">
-              Coba gratis
+            <a href="/login" className="lp-btn-primary lp-nav-cta">
+              Masuk guru
             </a>
           </div>
         </div>
@@ -286,15 +267,15 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
           {/* Kiri (5 Kolom) */}
           <div className="lp-hero-copy">
             <h1>
-              RPP siap dipakai, tinggal <span className="nw">Bapak/Ibu</span> sesuaikan.
+              Rancang RPP lebih mudah, bersama <span className="nw">Bapak/Ibu</span> guru.
             </h1>
             <p className="lp-body-lg">
-              Isi mata pelajaran, kelas, dan topik. Draf lengkap dengan tujuan pembelajaran, kegiatan, dan asesmen tersusun, Anda tinggal memeriksa dan mengedit.
+              RuangRPP sedang disiapkan untuk membantu menyusun draf tujuan pembelajaran, kegiatan, dan asesmen. Bapak/Ibu tetap memeriksa dan menyesuaikan hasilnya.
             </p>
 
             <div className="lp-hero-cta-group">
-              <a href="#harga" className="lp-btn-primary">
-                Coba gratis
+              <a href="/login" className="lp-btn-primary">
+                Masuk guru
               </a>
               <a href="#contoh" className="lp-btn-secondary">
                 Lihat contoh RPP
@@ -309,7 +290,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                 <line x1="16" y1="17" x2="8" y2="17"/>
                 <polyline points="10 9 9 9 8 9"/>
               </svg>
-              <span>Bisa diedit, unduh sebagai Word atau PDF.</span>
+              <span>Pratinjau produk. Generator, editor, dan ekspor sedang disiapkan.</span>
             </div>
           </div>
 
@@ -364,11 +345,11 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                 <div className="rpp-status-bar">
                   {isGenerating ? (
                     <span className="rpp-status-generating">
-                      <span className="rpp-sparkle">✦</span> Menyusun {generatingLabel}…
+                      <span className="rpp-sparkle">✦</span> Simulasi {generatingLabel}…
                     </span>
                   ) : (
                     <span className="rpp-status-done">
-                      <span className="rpp-done-dot">●</span> Draf selesai
+                      <span className="rpp-done-dot">●</span> Ilustrasi tampilan · belum ditinjau guru
                     </span>
                   )}
                 </div>
@@ -400,7 +381,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                     {demoStep >= 1 ? currentHeroMod.tp : 'Menyusun rumusan capaian kompetensi…'}
                   </p>
                   <div className="rpp-doc-ref-note">
-                    <em>Elemen: {currentHeroMod.elementRef}</em>
+                    <em>Ilustrasi elemen: {currentHeroMod.elementRef}</em>
                   </div>
                 </div>
 
@@ -421,7 +402,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
             </div>
 
             <div className="lp-hero-custom-prompt-note">
-              Ingin topik sendiri? <a href="#harga">Coba gratis.</a>
+              Ingin menyiapkan akun? <a href="/login">Masuk ke ruang guru.</a>
             </div>
           </div>
         </div>
@@ -468,7 +449,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
         <div className="lp-container">
           <h2 className="lp-h2">Contoh dokumen</h2>
           <p className="lp-body">
-            Bukan sekadar ringkasan singkat, melainkan draf perangkat ajar lengkap yang terstruktur dan siap ditelaah.
+            Ilustrasi struktur dokumen untuk menunjukkan rancangan produk. Contoh ini belum ditinjau guru dan bukan kutipan CP resmi.
           </p>
 
           {/* Subject Switcher */}
@@ -524,7 +505,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                   <h4 className="rpp-doc-h4">1. Capaian dan tujuan pembelajaran</h4>
                   <p className="rpp-doc-p">{currentAnnotatedMod.tp}</p>
                   <div className="rpp-doc-ref-note">
-                    <em>Elemen: {currentAnnotatedMod.elementRef}</em>
+                    <em>Ilustrasi elemen: {currentAnnotatedMod.elementRef}</em>
                   </div>
                 </div>
 
@@ -559,9 +540,9 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
             {/* Anotasi Samping (4 Hal Penting) */}
             <div className="lp-annotated-points">
               <div className="lp-annotated-item">
-                <h4>Rujukan regulasi resmi</h4>
+                <h4>Rujukan yang dapat ditelusuri</h4>
                 <p>
-                  Setiap dokumen menautkan elemen capaian pembelajaran resmi untuk menjaga keabsahan administratif telaah pengawas.
+                  Generator dirancang menampilkan sumber yang benar-benar digunakan. Tim masih memeriksa dokumen kurikulum dan belum mengaktifkan retrieval.
                 </p>
               </div>
 
@@ -592,7 +573,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                   className="lp-btn-secondary"
                   style={{ width: '100%', height: 44, fontSize: 14 }}
                 >
-                  Unduh contoh (PDF)
+                  Lihat rencana paket
                 </a>
               </div>
             </div>
@@ -619,14 +600,14 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
             <div className="lp-control-card">
               <h3>Ekspor Word (.docx) &amp; PDF</h3>
               <p>
-                Draf yang telah selesai dapat langsung diunduh dalam format rapi standar dinas pendidikan, siap cetak dan siap dilampirkan ke perangkat kurikulum.
+                Ekspor Word dan PDF akan tersedia setelah format draf ditinjau guru dan implementasi ekspor stabil.
               </p>
             </div>
 
             <div className="lp-control-card">
               <h3>Simpan &amp; gunakan kembali</h3>
               <p>
-                Setiap dokumen yang dibuat tersimpan di akun Anda. Bisa dipakai ulang untuk kelas paralel, atau diperbarui dengan cepat di semester berikutnya.
+                Penyimpanan dan pembukaan kembali draf direncanakan setelah generator tersedia. Saat ini akun guru sedang disiapkan.
               </p>
             </div>
           </div>
@@ -636,9 +617,9 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
       {/* ── 6. PAKET & BIAYA (§5.6: Per-Generate Kuota Draf + Keterangan Staging Dummy) ── */}
       <section className="lp-section" id="harga">
         <div className="lp-container">
-          <h2 className="lp-h2">Pilihan kuota draf RPP</h2>
+          <h2 className="lp-h2">Rencana paket draf RPP</h2>
           <p className="lp-body">
-            Sistem bayar per-generate yang fleksibel. Kuota berlaku permanen tanpa tanggal kedaluwarsa dan dokumen bebas diedit.
+            Lihat ketersediaan pembelian dan rincian kuota di ruang guru. Generator masih dalam pengembangan.
           </p>
 
           {/* Banner Pemberitahuan Fase Staging / Sandbox Dummy */}
@@ -649,7 +630,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
               <line x1="12" y1="8" x2="12.01" y2="8" />
             </svg>
             <div>
-              <strong>Fase Staging &amp; Pengembangan:</strong> Sistem pembayaran saat ini berjalan dalam mode <em>Sandbox / Simulasi Dummy</em>. Bapak/Ibu dapat memilih paket dan mencoba alur aktivasi kuota secara langsung tanpa pemotongan biaya riil.
+              <strong>Dalam pengembangan:</strong> Pembelian dibuka sesuai konfigurasi pengelola. Mode sandbox hanya untuk simulasi; ketersediaan generator ditampilkan di ruang guru.
             </div>
           </div>
 
@@ -688,16 +669,16 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                   type="button"
                   className={plan.recommended ? 'lp-btn-primary' : 'lp-btn-secondary'}
                   style={{ width: '100%', height: 44, fontSize: 15 }}
-                  onClick={() => handleOpenCheckout(plan)}
+                  onClick={() => window.location.assign('/dashboard#billing')}
                 >
-                  {plan.priceNumber === 0 ? 'Mulai Uji Coba Gratis' : `Simulasi Beli (${plan.quota})`}
+                  {plan.priceNumber === 0 ? 'Masuk ke ruang guru' : 'Lihat paket di akun'}
                 </button>
               </div>
             ))}
           </div>
 
           <p className="lp-small" style={{ marginTop: 24, textAlign: 'center', color: 'var(--abu-tinta)' }}>
-            Setiap 1 kuota generate menghasilkan 1 draf Modul Ajar/RPP lengkap beserta rujukan Capaian Pembelajaran dan asesmen. Dokumen yang telah dibuat tersimpan permanen di akun Anda.
+            Masuk ke akun belum mengaktifkan kuota. Generator akan dibuka setelah sumber dan hasil draf selesai diuji.
           </p>
         </div>
       </section>
@@ -761,11 +742,11 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
               Siap menyusun RPP tanpa lembur?
             </h2>
             <p className="lp-body-lg">
-              Mulai buat draf modul ajar pertama Anda hari ini. Rapi, terstruktur, dan bisa langsung diunduh.
+              Siapkan akun dan lihat rancangan ruang kerja guru. Pembuatan draf dibuka setelah sumber dan generator selesai diuji.
             </p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-              <a href="#harga" className="lp-btn-primary" style={{ background: '#16A596', borderColor: '#16A596' }}>
-                Coba gratis sekarang
+              <a href="/login" className="lp-btn-primary" style={{ background: '#16A596', borderColor: '#16A596' }}>
+                Masuk ke ruang guru
               </a>
               <a href="#contoh" className="lp-btn-secondary">
                 Lihat contoh dokumen
@@ -831,170 +812,6 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
       </footer>
 
       {/* ── MODAL: SIMULATOR MIDTRANS PAYMENT (DUMMY SANDBOX) ── */}
-      {selectedPlan && (
-        <div className="lp-modal-overlay" onClick={() => setSelectedPlan(null)}>
-          <div className="lp-modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="lp-modal-header">
-              <h3 className="lp-modal-title">
-                {checkoutStep === 'success' ? 'Simulasi Berhasil' : `Pilih Kuota: ${selectedPlan.name}`}
-              </h3>
-              <button
-                type="button"
-                className="lp-modal-close"
-                onClick={() => setSelectedPlan(null)}
-                aria-label="Tutup"
-              >
-                &times;
-              </button>
-            </div>
-
-            {checkoutStep === 'form' && (
-              <form onSubmit={handleProcessPayment}>
-                {/* Banner Sandbox Dummy */}
-                <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', padding: '10px 14px', borderRadius: 8, marginBottom: 16, fontSize: 13, color: '#92400E', display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-                  <span style={{ fontSize: 16, flexShrink: 0 }}>🧪</span>
-                  <div>
-                    <strong>Mode Sandbox (Simulasi Dummy):</strong> Ini adalah lingkungan pengujian staging. Tidak ada pemotongan saldo atau biaya riil yang terjadi.
-                  </div>
-                </div>
-
-                <div style={{ background: 'var(--mint-tipis)', padding: '12px 16px', borderRadius: 10, marginBottom: 18, border: '1px solid var(--garis)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div>
-                      <strong style={{ color: 'var(--navy-rpp)', fontSize: 16 }}>{selectedPlan.name}</strong>
-                      <div style={{ fontSize: 13, color: 'var(--teal-dalam)', fontWeight: 700 }}>
-                        {selectedPlan.quota} ({selectedPlan.unitPrice})
-                      </div>
-                    </div>
-                    <span style={{ fontSize: 20, fontWeight: 800, color: 'var(--navy-rpp)' }}>{selectedPlan.price}</span>
-                  </div>
-                  <div style={{ fontSize: 12.5, color: 'var(--abu-tinta)', marginTop: 4 }}>{selectedPlan.period}</div>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 12 }}>
-                  <label htmlFor="cust-name" style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy-rpp)' }}>
-                    Nama Lengkap Guru
-                  </label>
-                  <input
-                    id="cust-name"
-                    type="text"
-                    required
-                    style={{ height: 44, padding: '0 14px', border: '1px solid var(--garis)', borderRadius: 10, background: '#fff', fontSize: 14 }}
-                    placeholder="mis. Budi Santoso, S.Pd."
-                    value={customer.name}
-                    onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
-                  />
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 12 }}>
-                  <label htmlFor="cust-email" style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy-rpp)' }}>
-                    Alamat Email Aktif
-                  </label>
-                  <input
-                    id="cust-email"
-                    type="email"
-                    required
-                    style={{ height: 44, padding: '0 14px', border: '1px solid var(--garis)', borderRadius: 10, background: '#fff', fontSize: 14 }}
-                    placeholder="email@sekolah.sch.id"
-                    value={customer.email}
-                    onChange={(e) => setCustomer({ ...customer, email: e.target.value })}
-                  />
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 16 }}>
-                  <label htmlFor="cust-phone" style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy-rpp)' }}>
-                    Nomor WhatsApp
-                  </label>
-                  <input
-                    id="cust-phone"
-                    type="tel"
-                    required
-                    style={{ height: 44, padding: '0 14px', border: '1px solid var(--garis)', borderRadius: 10, background: '#fff', fontSize: 14 }}
-                    placeholder="08123456789"
-                    value={customer.phone}
-                    onChange={(e) => setCustomer({ ...customer, phone: e.target.value })}
-                  />
-                </div>
-
-                {selectedPlan.priceNumber > 0 && (
-                  <div style={{ marginBottom: 20 }}>
-                    <label style={{ fontSize: 13, fontWeight: 700, color: 'var(--navy-rpp)', display: 'block', marginBottom: 8 }}>
-                      Pilih Kanal Pembayaran Dummy (Midtrans Simulator)
-                    </label>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
-                      <button
-                        type="button"
-                        className={`lp-hero-tab ${paymentMethod === 'qris' ? 'active' : ''}`}
-                        onClick={() => setPaymentMethod('qris')}
-                      >
-                        QRIS Dummy
-                      </button>
-                      <button
-                        type="button"
-                        className={`lp-hero-tab ${paymentMethod === 'va' ? 'active' : ''}`}
-                        onClick={() => setPaymentMethod('va')}
-                      >
-                        Virtual Account
-                      </button>
-                      <button
-                        type="button"
-                        className={`lp-hero-tab ${paymentMethod === 'card' ? 'active' : ''}`}
-                        onClick={() => setPaymentMethod('card')}
-                      >
-                        Kartu Kredit
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  className="lp-btn-primary"
-                  style={{ width: '100%', height: 46 }}
-                >
-                  {selectedPlan.priceNumber === 0 ? 'Aktifkan Kuota Uji Coba Gratis' : `Simulasikan Pembayaran Dummy (${selectedPlan.price})`}
-                </button>
-              </form>
-            )}
-
-            {checkoutStep === 'processing' && (
-              <div style={{ textAlign: 'center', padding: '36px 0' }}>
-                <p style={{ fontWeight: 600, color: 'var(--navy-rpp)', marginBottom: 8 }}>
-                  Memproses Simulasi Gateway Pembayaran Midtrans...
-                </p>
-                <p className="lp-small">Sedang menyambungkan ke Sandbox environment.</p>
-              </div>
-            )}
-
-            {checkoutStep === 'success' && (
-              <div style={{ textAlign: 'center', padding: '24px 0' }}>
-                <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--mint-tipis)', color: 'var(--teal-dalam)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </div>
-                <h4 style={{ fontSize: 20, color: 'var(--navy-rpp)', margin: '0 0 8px 0' }}>
-                  Simulasi Aktivasi Berhasil!
-                </h4>
-                <div style={{ display: 'inline-block', background: 'var(--mint-tipis)', color: 'var(--teal-dalam)', padding: '6px 14px', borderRadius: 12, fontSize: 13.5, fontWeight: 700, marginBottom: 14 }}>
-                  +{selectedPlan.quota} Telah Ditambahkan ke Akun (Mode Uji Coba)
-                </div>
-                <p className="lp-body" style={{ margin: '0 auto 20px', maxWidth: 420 }}>
-                  Terima kasih, Bapak/Ibu {customer.name || 'Guru'}. Selama fase staging ini, kuota draf Anda telah aktif secara simulasi untuk pengujian draf modul ajar.
-                </p>
-                <button
-                  type="button"
-                  className="lp-btn-primary"
-                  onClick={() => setSelectedPlan(null)}
-                >
-                  Mulai Gunakan Kuota Generate
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
       {/* ── MODAL: LEGAL KETENTUAN, PRIVASI, & GARANSI ── */}
       {legalModal && (
         <div className="lp-modal-overlay" onClick={() => setLegalModal(null)}>
@@ -1020,21 +837,20 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
                 <div>
                   <p>1. <strong>Peran Platform:</strong> ruangRPP menyediakan sistem kecerdasan buatan terpandu untuk membantu pendidik menyusun draf dokumen pembelajaran.</p>
                   <p>2. <strong>Tanggung Jawab Pedagogis:</strong> Seluruh draf perangkat ajar yang dihasilkan berstatus draf kerja. Pendidik bertanggung jawab penuh memeriksa dan menyesuaikan isi dokumen dengan kondisi peserta didik di satuan pendidikannya.</p>
-                  <p>3. <strong>Hak Cipta Dokumen:</strong> Dokumen yang telah diunduh sepenuhnya menjadi hak milik pendidik dan sekolah bersangkutan untuk keperluan pembelajaran non-komersial.</p>
+                  <p>3. <strong>Status pengembangan:</strong> Generator, ekspor, dan paket berbayar belum aktif. Ketentuan penggunaan sumber dan hasil perlu ditetapkan sebelum layanan dirilis.</p>
                 </div>
               )}
 
               {legalModal === 'privacy' && (
                 <div>
-                  <p>1. <strong>Kerahasiaan Data:</strong> Kami menghormati privasi Bapak/Ibu guru. Data identitas sekolah dan nomor kontak yang Anda daftarkan hanya digunakan untuk keperluan aktivasi akun dan layanan pelanggan.</p>
-                  <p>2. <strong>Keamanan Transaksi:</strong> Data pembayaran diproses secara aman dan terenkripsi melalui Midtrans. Kami tidak pernah menyimpan nomor kartu kredit atau detail perbankan Anda di server kami.</p>
+                  <p>Nama, email, identitas akun Google, serta waktu masuk digunakan untuk akun RuangRPP. Pembayaran belum terhubung.</p>
+                  <p><a href="/privasi">Baca penggunaan data akun dan status layanan.</a></p>
                 </div>
               )}
 
               {legalModal === 'refund' && (
                 <div>
-                  <p>1. <strong>Jaminan 3x24 Jam:</strong> Kami memberikan garansi pengembalian dana 100% jika terjadi kendala teknis sistemik pada platform kami yang membuat layanan tidak dapat digunakan sama sekali.</p>
-                  <p>2. <strong>Proses Klaim:</strong> Cukup hubungi tim dukungan melalui nomor kontak resmi dengan melampirkan bukti transaksi pembayaran.</p>
+                  <p>Pembayaran belum tersedia. Kebijakan pengembalian dana akan ditetapkan sebelum paket berbayar dibuka.</p>
                 </div>
               )}
             </div>

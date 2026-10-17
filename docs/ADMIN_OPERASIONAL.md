@@ -1,6 +1,6 @@
 # Admin operasional RuangRPP
 
-Pembaruan 16 Oktober 2026. Dashboard lokal: http://localhost:3001/ (port mengikuti `.env`).
+Pembaruan 17 Oktober 2026. Dashboard admin lokal: http://localhost:3001/admin (port mengikuti `.env`). Landing page berada di `/`; login dan dashboard guru berada di `/login` dan `/dashboard`.
 
 ## Yang tersedia
 
@@ -9,7 +9,7 @@ Pembaruan 16 Oktober 2026. Dashboard lokal: http://localhost:3001/ (port mengiku
 - Pengguna: daftar akun internal, peran, jumlah unggahan, dan login terakhir yang bisa dihubungkan ke ID akun.
 - Riwayat aktivitas: pencarian tindakan, filter ID pengguna, 25 baris per halaman, tautan dokumen. Catatan lama tanpa ID pelaku tetap disimpan; identitasnya tidak ditebak dari nama.
 - Model LLM: simpan profil penyedia + ID model, pilih default, hapus profil yang bukan default. Perubahan tercatat dalam audit. Default tersimpan di PostgreSQL, tetap ada setelah container dimulai ulang.
-- Keuangan: halaman status integrasi. Angka belum tersedia ditulis `—`, bukan Rp0. Tidak ada transaksi contoh.
+- Keuangan: transaksi Midtrans, filter sandbox/produksi, jumlah bruto transaksi lunas, status pemeriksaan, dan verifikasi ulang. Angka berasal dari database; tidak ada transaksi contoh. Lihat [petunjuk pembayaran](PEMBAYARAN_MIDTRANS.md).
 
 Menu operasional dan seluruh `/api/v1/admin/*` dibatasi untuk peran admin. Pengumpul tetap mengakses pengumpulan sumber. Navigasi menggunakan hash URL, sehingga menu dapat dibuka kembali, disegarkan, dan menggunakan tombol kembali browser.
 
@@ -39,9 +39,9 @@ Jika API mengeluhkan kolom `actor_id` belum ada, jalankan `docker compose run --
 
 ## Batas tahap ini
 
-Akun guru, history generasi modul, pembayaran QRIS/langganan, refund, analitik biaya token, dan ekspor laporan keuangan belum diintegrasikan. Daftar akun internal tidak mengklaim sebagai jumlah pelanggan. Status indeks juga tetap mengikuti implementasi nyata, tanpa menganggap dokumen otomatis sudah di-embedding.
+Akun guru dengan Google sudah memiliki alur aplikasi, namun aktivasi dan uji login nyata menunggu Client ID milik tim. Checkout hosted Midtrans, verifikasi server, dan pemberian kuota tersedia; aktivasi membutuhkan konfigurasi pada panduan pembayaran. History generasi, langganan otomatis, pengiriman refund uang, analitik biaya token, dan ekspor laporan keuangan belum diintegrasikan. Daftar akun internal tidak mengklaim sebagai jumlah pelanggan. Status indeks tetap mengikuti implementasi nyata. Lihat [petunjuk login dan tahap RAG](LOGIN_GOOGLE_DAN_TAHAP_RAG.md).
 
-Sebelum rilis publik diperlukan integrasi generator, akun guru dan aturan aksesnya, migrasi berversi untuk pengembangan skema selanjutnya, HTTPS/cookie secure, backup dan pemulihan, pemantauan serta evaluasi keamanan. Pembayaran menyusul setelah generator tervalidasi, dengan pencatatan webhook idempoten dan rekonsiliasi transaksi.
+Sebelum rilis publik diperlukan integrasi generator dan pemakaian kuota, migrasi berversi untuk pengembangan skema selanjutnya, HTTPS/cookie secure, backup dan pemulihan, pemantauan serta evaluasi keamanan. Checkout tetap ditutup secara default sampai pengelola mengaktifkannya.
 
 ## Pola tampilan
 
