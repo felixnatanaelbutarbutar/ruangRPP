@@ -316,8 +316,20 @@ def build_rag_router(admin):
     @router.get('/teacher/drafts')
     def list_drafts(page: int = Query(1, ge=1), teacher=Depends(current_teacher)):
         with Session() as db:
-            rows = db.scalars(select(LessonDraft).where(LessonDraft.teacher_id == teacher.id).order_by(LessonDraft.created_at.desc()).offset((page - 1) * 20).limit(20))
-            return {'items': [{'id': d.id, 'mode': d.input_data.get('mode', 'rag'), 'title': d.result['title'], 'created_at': d.created_at.isoformat()} for d in rows]}
+            total = db.scalar(select(func.count()).select_from(LessonDraft).where(LessonDraft.teacher_id == teacher.id)) or 0
+            rows = db.scalars(select(LessonDraft).where(LessonDraft.teacher_id == teacher.id).order_by(LessonDraft.created_at.desc()).offset((page - 1) * 10).limit(10))
+            items = []
+            for d in rows:
+                inp = d.input_data or {}
+                items.append({
+                    'id': d.id,
+                    'mode': inp.get('mode', 'rag'),
+                    'title': d.result.get('title', 'Draf Modul'),
+                    'subject': inp.get('subject', ''),
+                    'grade': inp.get('grade'),
+                    'created_at': d.created_at.isoformat(),
+                })
+            return {'items': items, 'total': total}
 
     @router.get('/teacher/drafts/{draft_id}')
     def get_draft(draft_id: str, teacher=Depends(current_teacher)):
@@ -340,5 +352,16 @@ def build_rag_router(admin):
             log(db, None, 'Guru menyunting draf; rujukan belum ditinjau ulang setelah suntingan', teacher)
             db.commit()
             return draft_payload(d)
+
+    @router.delete('/teacher/drafts/{draft_id}', dependencies=[Depends(same_origin)])
+    def delete_draft(draft_id: str, teacher=Depends(current_teacher)):
+        with Session() as db:
+            d = db.scalar(select(LessonDraft).where(LessonDraft.id == draft_id, LessonDraft.teacher_id == teacher.id).with_for_update())
+            if not d:
+                raise HTTPException(404, 'Draf tidak ditemukan.')
+            db.delete(d)
+            log(db, None, f'Menghapus draf modul {d.id}', teacher)
+            db.commit()
+            return {'ok': True}
 
     return router

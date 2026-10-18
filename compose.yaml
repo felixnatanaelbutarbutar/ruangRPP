@@ -136,6 +136,7 @@ services:
     profiles: [test]
     environment:
       APP_TESTING: "1"
+      RAG_ENABLED: "false"
       DATABASE_URL: sqlite:////tmp/ruangrpp-tests.db
       STORAGE_DIR: /tmp/ruangrpp-test-uploads
     command: [python, -m, pytest, -q, -p, no:cacheprovider]
@@ -160,6 +161,7 @@ services:
     profiles: [test]
     environment:
       APP_TESTING: "1"
+      RAG_ENABLED: "false"
       DATABASE_URL: postgresql+psycopg://test_runner:isolated_test_database_only@test-db:5432/ruangrpp_test
       STORAGE_DIR: /tmp/ruangrpp-test-uploads
     depends_on:
