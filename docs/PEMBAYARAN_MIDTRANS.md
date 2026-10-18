@@ -14,7 +14,7 @@ Implementasi 17 Oktober 2026. Pembelian satu kali, bukan langganan otomatis.
 - Admin `/admin#finance`: filter sandbox/produksi, transaksi, nilai bruto pembayaran terverifikasi, jumlah lunas, status perlu ditinjau, dan pemeriksaan ulang.
 - Refund penuh menahan kuota paket. Partial refund dan chargeback menahan seluruh kuota paket untuk pemeriksaan manual. Tidak ada endpoint untuk mengirim refund uang atau memulihkan kuota secara manual pada tahap ini.
 
-Saldo ini mencatat kuota yang telah diberikan. **Generator dan pengurangan kuota saat generasi belum diimplementasikan.** Tidak ada kuota percobaan otomatis. Data sandbox tidak menjadi saldo produksi atau laporan uang nyata.
+Saldo adalah jumlah kuota aktif dikurangi pemakaian draf berhasil. Generator AI langsung dan berbasis sumber menggunakan satu kuota setelah draf tersimpan. Tiga kuota percobaan tersedia lewat tombol klaim satu kali per akun per lingkungan, tidak memerlukan Midtrans dan tidak dihitung sebagai pemasukan. Data sandbox tidak menjadi saldo produksi atau laporan uang nyata. Lihat [MVP_AI_LANGSUNG.md](MVP_AI_LANGSUNG.md).
 
 ## Konfigurasi lokal dengan Docker
 

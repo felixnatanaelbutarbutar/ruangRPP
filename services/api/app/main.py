@@ -75,10 +75,12 @@ def audit(db, user, action, document_id=None):
 from .admin_api import build_admin_router
 from .teacher_auth import router as teacher_router
 from .billing import router as billing_router, build_admin_billing_router
+from .rag_api import build_rag_router
 app.include_router(build_admin_router(admin, audit))
 app.include_router(teacher_router)
 app.include_router(billing_router)
 app.include_router(build_admin_billing_router(admin))
+app.include_router(build_rag_router(admin))
 
 
 def payload(d, detail=False):
@@ -93,6 +95,11 @@ def payload(d, detail=False):
     with Session() as db:
         job = db.get(ProcessingJob, d.id)
         value['processing_status'] = job.status if job else 'completed'
+        from .db import RagIndex
+        from .rag import valid_index
+        index = db.get(RagIndex, d.id)
+        if index:
+            value['vector_status'] = index.status if valid_index(index, d, (index.status,)) else 'stale'
     return value
 
 
@@ -160,7 +167,7 @@ def me(user=Depends(current_user)):
 
 @app.get('/api/v1/catalog')
 def catalog(user=Depends(current_user)):
-    return {'categories': CATEGORIES, 'subjects': SUBJECTS, 'phases': ['A', 'B', 'C', 'Umum'], 'indexing_available': False, 'max_upload_mib': 128}
+    return {'categories': CATEGORIES, 'subjects': SUBJECTS, 'phases': ['A', 'B', 'C', 'Umum'], 'indexing_available': True, 'max_upload_mib': 128}
 
 
 @app.get('/api/v1/documents')
@@ -301,6 +308,7 @@ def review(document_id: str, body: Review, user=Depends(admin)):
 
 @app.get('/api/v1/requirements')
 def requirements(user=Depends(current_user)):
+    from .collection_plan import CORE_IDS
     with Session() as db:
         docs = db.scalars(select(Document)).all()
         items = []
@@ -310,6 +318,7 @@ def requirements(user=Depends(current_user)):
             minimum = r.criteria['minimum']
             state = 'not_applicable' if r.applicability == 'not_applicable' else 'missing' if not matching else 'complete' if len(reviewed) >= minimum and r.applicability == 'applicable' else 'review'
             items.append({'id': r.id, 'label': r.label, 'criteria': r.criteria, 'note': r.note, 'applicability': r.applicability,
+                          'priority': 'core' if r.id in CORE_IDS else 'later',
                           'uploaded': len(matching), 'reviewed': len(reviewed), 'state': state, 'document_ids': [d.id for d in matching]})
         return {'items': items}
 

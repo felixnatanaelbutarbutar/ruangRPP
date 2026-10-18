@@ -386,7 +386,7 @@ export function AdminPanels({ view, api, openDocument }: { view: AdminView; api:
       <div className="table-scroll"><table><thead><tr><th>Waktu</th><th>Pelaku</th><th>Aktivitas</th><th>Sumber</th></tr></thead><tbody>{!loading && events.map(e => <tr key={e.id}><td className="nowrap">{timestamp(e.at)}</td><td>{e.actor}<small className="cell-note">{e.actor_kind === 'teacher' ? 'Akun guru' : e.actor_id ? 'Akun internal' : 'Catatan lama / sistem'}</small></td><td>{e.action}</td><td>{e.document_id ? <button className="text-button" onClick={() => openDocument(e.document_id!)}>Buka dokumen</button> : '—'}</td></tr>)}</tbody></table></div>
       {!loading && !events.length && <div className="empty compact"><p>Tidak ada aktivitas yang sesuai filter.</p></div>}
       <div className="table-foot pagination"><span>Halaman {page} dari {Math.max(1, Math.ceil(total / 25))}</span><div className="button-group"><button className="secondary small" disabled={loading || page <= 1} onClick={() => setPage(p => p - 1)}>Sebelumnya</button><button className="secondary small" disabled={loading || page * 25 >= total} onClick={() => setPage(p => p + 1)}>Berikutnya</button></div></div>
-      <div className="inline-note">Riwayat pembuatan modul oleh guru belum tersedia karena generator belum terhubung.</div>
+      <div className="inline-note">Aktivitas penyimpanan dan suntingan draf tercatat di sini. Isi draf pribadi dibuka oleh guru pemiliknya.</div>
     </section>}
 
     {view === 'finance' && <AdminFinance />}

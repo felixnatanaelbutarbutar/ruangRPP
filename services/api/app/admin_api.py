@@ -156,7 +156,7 @@ def build_admin_router(admin, audit):
                                'actor_kind': 'teacher' if e.actor_id in teacher_ids else 'internal' if e.actor_id else 'unknown',
                                'action': e.action, 'at': e.created_at.isoformat(), 'document_id': e.document_id}
                               for e in events], 'total': total, 'page': page, 'limit': limit,
-                    'generation_history_available': False}
+                    'generation_history_available': True}
 
     @router.get('/models')
     def models():
@@ -172,7 +172,7 @@ def build_admin_router(admin, audit):
             return {'items': [{'id': p.id, 'provider': p.provider, 'model': p.model,
                                'updated_at': p.updated_at.isoformat(), 'connection_status': 'not_tested'}
                               for p in db.scalars(select(ModelProfile).order_by(ModelProfile.updated_at.desc()))],
-                    'default_id': default.value if default else None, 'generation_available': False,
+                    'default_id': default.value if default else None, 'generation_available': os.getenv('RAG_ENABLED', 'true').lower() == 'true',
                     'suggested_models': SUGGESTED_MODELS,
                     'embedding': embedding_info,
                     'providers': [{'id': key, 'label': label, 'credential_configured': bool(os.getenv(env))}
@@ -249,7 +249,7 @@ def build_admin_router(admin, audit):
             setting.value = p.id
             audit(db, user, f'Memilih default LLM: {p.provider} / {p.model}')
             db.commit()
-            return {'default_id': p.id, 'generation_available': False}
+            return {'default_id': p.id, 'generation_available': os.getenv('RAG_ENABLED', 'true').lower() == 'true'}
 
     @router.delete('/models/{profile_id}')
     def remove_model(profile_id: str, user=Depends(admin)):

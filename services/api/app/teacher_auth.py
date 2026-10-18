@@ -60,7 +60,7 @@ def current_teacher(request: Request):
 def teacher_payload(teacher):
     from .billing import configuration
     return {'id': teacher.id, 'name': teacher.name, 'email': teacher.email, 'role': 'teacher',
-            'generation_available': False, 'billing_available': configuration()['available']}
+            'generation_available': os.getenv('RAG_ENABLED', 'true').lower() == 'true', 'billing_available': configuration()['available']}
 
 
 @router.get('/auth/config')

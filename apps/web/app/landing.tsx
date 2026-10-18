@@ -95,8 +95,8 @@ const PLANS: Plan[] = [
     features: [
       '3 Kuota Generate Draf RPP Lengkap',
       'Akses Seluruh Fase (A, B, C / Kelas 1–6 SD)',
-      'Pratinjau struktur modul terstandar',
-      'Ekspor format Word (.docx) & PDF',
+      'Draf terstruktur untuk ditinjau guru',
+      'Edit dan simpan draf di akun',
       'Tanpa batas waktu (kuota tidak hangus)',
     ],
   },
@@ -113,9 +113,9 @@ const PLANS: Plan[] = [
       '15 Kuota Generate Draf RPP',
       'Hanya Rp 1.660 per draf modul',
       'Kuota aktif permanen (tanpa tanggal kedaluwarsa)',
-      'Ekspor Word (.docx) & PDF siap cetak',
-      'Instrumen asesmen & rubrik terlampir',
-      'Arsip draf tersimpan selamanya di akun',
+      'Edit dan buka kembali draf tersimpan',
+      'Usulan kegiatan dan asesmen pembelajaran',
+      'Riwayat draf pada dashboard guru',
     ],
     recommended: true, // Rekomendasi dengan border teal 2px (§5.6)
   },
@@ -132,9 +132,9 @@ const PLANS: Plan[] = [
       '50 Kuota Generate Draf RPP',
       'Tarif paling hemat (Rp 1.300 per draf)',
       'Bebas digunakan untuk semua kelas & mapel',
-      'Ekspor dokumen resmi siap telaah pengawas',
-      'Panduan diferensiasi belajar lengkap',
-      'Dukungan prioritas pembaruan kurikulum',
+      'Draf kerja untuk ditinjau dan disesuaikan',
+      'Konteks kelas dapat diisi saat menyusun draf',
+      'Pilihan AI langsung atau berbasis sumber',
     ],
   },
 ];
@@ -142,11 +142,11 @@ const PLANS: Plan[] = [
 const FAQS = [
   {
     q: 'Apakah hasilnya bisa saya edit?',
-    a: 'Editor draf sedang direncanakan. Saat generator tersedia, guru tetap perlu memeriksa dan menyesuaikan hasil dengan kebutuhan kelas.',
+    a: 'Bisa. Draf tersimpan di dashboard guru dan dapat dibuka serta diedit kembali tanpa memakai kuota tambahan. Periksa isinya sebelum digunakan.',
   },
   {
     q: 'Sesuai kurikulum apa?',
-    a: 'Tim sedang memeriksa dokumen kurikulum nasional untuk SD. Cakupan mata pelajaran dan fase baru diaktifkan setelah sumber dan template ditinjau.',
+    a: 'Mode AI langsung belum diverifikasi terhadap CP. Mode berbasis sumber tersedia untuk cakupan yang dokumen dan templatenya sudah ditinjau. Keduanya tetap memerlukan pemeriksaan guru.',
   },
   {
     q: 'Format apa yang bisa diunduh?',
@@ -154,11 +154,11 @@ const FAQS = [
   },
   {
     q: 'Apakah data kelas dan kuota saya disimpan?',
-    a: 'Akun yang berhasil masuk dengan Google tersimpan di RuangRPP. Penyimpanan draf dan pengelolaan kuota belum diaktifkan.',
+    a: 'Akun, draf, dan saldo kuota disimpan di RuangRPP. Topik dan konteks kelas dikirim ke penyedia AI untuk menyusun draf; jangan memasukkan data pribadi murid.',
   },
   {
     q: 'Bagaimana sistem hitungan biaya per-generate?',
-    a: 'Paket dan angka di halaman ini masih rancangan. Harga, kuota, dan ketentuan akhir akan ditetapkan setelah generator diuji bersama guru.',
+    a: 'Satu kuota dipakai setelah draf berhasil disimpan. Percobaan yang gagal tidak memotong kuota aplikasi. Aktifkan 3 kuota percobaan gratis di ruang guru; pembelian mengikuti status yang ditampilkan di sana.',
   },
   {
     q: 'Apakah saat ini pembayaran sudah memotong uang riil?',
@@ -504,15 +504,15 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
               <div className="lp-step-num">Langkah 2</div>
               <h3 className="lp-step-title">Biarkan draf ditulis</h3>
               <p className="lp-step-desc">
-                Sistem menyusun tujuan pembelajaran berlandaskan regulasi resmi, skenario kegiatan pembuka-inti-penutup, serta asesmen.
+                Pilih draf AI langsung tanpa sumber, atau draf berbasis sumber bila tersedia. Sistem menyusun usulan tujuan, kegiatan, serta asesmen untuk ditinjau guru.
               </p>
             </div>
 
             <div className="lp-step-row">
               <div className="lp-step-num">Langkah 3</div>
-              <h3 className="lp-step-title">Periksa dan unduh</h3>
+              <h3 className="lp-step-title">Periksa dan simpan</h3>
               <p className="lp-step-desc">
-                Sesuaikan draf dengan kebutuhan murid di kelas Anda, lalu ekspor langsung ke format Microsoft Word atau PDF siap cetak.
+                Baca, edit, dan simpan draf sesuai kebutuhan kelas. Ekspor Word dan PDF masih dalam rencana pengembangan.
               </p>
             </div>
           </div>
@@ -617,7 +617,7 @@ export function LandingView({ onOpenLogin }: { onOpenLogin: () => void }) {
               <div className="lp-annotated-item">
                 <h4>Rujukan yang dapat ditelusuri</h4>
                 <p>
-                  Generator dirancang menampilkan sumber yang benar-benar digunakan. Tim masih memeriksa dokumen kurikulum dan belum mengaktifkan retrieval.
+                  Mode berbasis sumber menampilkan potongan rujukan yang digunakan. Mode AI langsung tidak menggunakan dokumen rujukan dan diberi label belum diverifikasi terhadap CP.
                 </p>
               </div>
 

@@ -15,7 +15,7 @@ from pydantic import BaseModel, ConfigDict
 from sqlalchemy import func, select
 from starlette.concurrency import run_in_threadpool
 
-from .db import Audit, PaymentOrder, QuotaGrant, Session, Teacher, now
+from .db import Audit, LessonDraft, PaymentOrder, QuotaGrant, Session, Teacher, now
 from .teacher_auth import current_teacher, same_origin
 
 router = APIRouter(prefix='/api/v1')
@@ -103,9 +103,30 @@ def event(db, order, message):
 
 
 def quota(db, teacher_id, env):
-    return db.scalar(select(func.coalesce(func.sum(QuotaGrant.credits), 0)).where(
+    granted = db.scalar(select(func.coalesce(func.sum(QuotaGrant.credits), 0)).where(
         QuotaGrant.teacher_id == teacher_id, QuotaGrant.environment == env,
         QuotaGrant.suspended_at.is_(None)))
+    used = db.scalar(select(func.coalesce(func.sum(LessonDraft.credits_used), 0)).where(
+        LessonDraft.teacher_id == teacher_id, LessonDraft.environment == env))
+    return max(0, granted - used)
+
+
+def trial_id(teacher_id, env):
+    return 'TR-' + uuid5(NAMESPACE_URL, f'rr:trial:{env}:{teacher_id}').hex
+
+
+@router.post('/teacher/billing/trial', dependencies=[Depends(same_origin)])
+def claim_trial(teacher=Depends(current_teacher)):
+    env = environment()
+    with Session() as db:
+        db.scalar(select(Teacher).where(Teacher.id == teacher.id).with_for_update())
+        identifier = trial_id(teacher.id, env)
+        if not db.get(QuotaGrant, identifier):
+            db.add(QuotaGrant(order_id=identifier, teacher_id=teacher.id, environment=env, credits=3))
+            db.add(Audit(id=str(uuid4()), actor_id=teacher.id, actor_name=teacher.name,
+                         action=f'Mengaktifkan 3 kuota percobaan satu kali ({env})'))
+            db.commit()
+        return {'environment': env, 'quota': quota(db, teacher.id, env), 'claimed': True}
 
 
 @router.get('/teacher/billing')
@@ -114,10 +135,11 @@ def billing(page: int = Query(1, ge=1), teacher=Depends(current_teacher)):
         query = select(PaymentOrder).where(PaymentOrder.teacher_id == teacher.id)
         rows = db.scalars(query.order_by(PaymentOrder.created_at.desc(), PaymentOrder.id).offset((page - 1) * 20).limit(20))
         return {'setup': configuration(), 'plans': list(PLANS.values()),
+                'trial': {'credits': 3, 'claimed': db.get(QuotaGrant, trial_id(teacher.id, environment())) is not None},
                 'quota': {env: quota(db, teacher.id, env) for env in ('sandbox', 'production')},
                 'orders': [order_payload(o) for o in rows], 'page': page,
                 'total': db.scalar(select(func.count()).select_from(PaymentOrder).where(PaymentOrder.teacher_id == teacher.id)),
-                'generation_available': False}
+                'generation_available': os.getenv('RAG_ENABLED', 'true').lower() == 'true'}
 
 
 class CheckoutInput(BaseModel):
@@ -195,6 +217,8 @@ def verify_order(order_id, teacher_id=None, force=False, transaction_hint=None):
         order = db.scalar(select(PaymentOrder).where(*filters).with_for_update())
         if not order:
             raise HTTPException(404, 'Transaksi tidak ditemukan.')
+        # Serialize grants/refunds with generation's quota check and deduction.
+        db.scalar(select(Teacher).where(Teacher.id == order.teacher_id).with_for_update())
         if not force and order.checked_at and (now() - order.checked_at.replace(tzinfo=timezone.utc)).total_seconds() < 15:
             return order_payload(order)
         reference = transaction_hint or order.transaction_id or order.id

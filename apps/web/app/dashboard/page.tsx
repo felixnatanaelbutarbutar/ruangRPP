@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { TeacherBilling } from '../billing-panels';
+import { TeacherGenerator } from '../rag-panels';
 type Teacher = { id: string; name: string; email: string };
 
 export default function Dashboard() {
@@ -30,11 +31,11 @@ export default function Dashboard() {
       {error && <div className="error" role="alert">{error}<button className="text-button" onClick={() => window.location.reload()}>Muat ulang</button></div>}
       {!user && !error && <p role="status">Memuat ruang guru...</p>}
       {user && <>
-        <div className="page-heading"><div><h1>Selamat datang, {user.name}</h1><p>Akun Bapak/Ibu sudah tersimpan. Persiapan ruang kerja pembelajaran dimulai di sini.</p></div></div>
-        <section className="panel"><div className="panel-head"><h2>Modul ajar</h2><span className="badge">Sedang disiapkan</span></div><div className="teacher-section"><h3>Sumber diperiksa sebelum digunakan</h3><p>Tim sedang mengumpulkan dokumen kurikulum, meninjau contoh modul ajar, dan menguji pencarian sumber. Pembuatan draf belum dibuka.</p><a className="secondary" href="/#contoh">Lihat ilustrasi dokumen</a></div></section>
+        <div className="page-heading"><div><h1>Selamat datang, {user.name}</h1><p>Susun draf pembelajaran, tinjau, dan sesuaikan dengan kebutuhan kelas.</p></div><a className="secondary small" href="#billing">Kuota & paket</a></div>
+        <TeacherGenerator />
         <section className="panel"><div className="panel-head"><h2>Akun saya</h2></div><dl className="account-details"><div><dt>Nama</dt><dd>{user.name}</dd></div><div><dt>Email Google</dt><dd>{user.email}</dd></div><div><dt>Metode masuk</dt><dd>Google</dd></div></dl></section>
         <TeacherBilling />
-        <p className="hint">Hasil pembelajaran nantinya tetap berupa draf untuk ditinjau guru.</p>
+        <p className="hint">Hasil AI merupakan draf kerja. Keputusan pembelajaran tetap berada pada guru.</p>
       </>}
     </main>
   </div>;

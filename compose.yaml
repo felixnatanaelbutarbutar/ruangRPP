@@ -4,6 +4,19 @@ x-api: &api
   image: ruangrpp-api:local
   build: ./services/api
 
+x-rag-env: &rag-env
+  QDRANT_URL: http://qdrant:6333
+  QDRANT_API_KEY: ${QDRANT_API_KEY:-}
+  OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+  DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+  CUSTOM_LLM_API_KEY: ${CUSTOM_LLM_API_KEY:-}
+  CUSTOM_LLM_BASE_URL: ${CUSTOM_LLM_BASE_URL:-}
+  CUSTOM_EMBEDDING_API_KEY: ${CUSTOM_EMBEDDING_API_KEY:-}
+  CUSTOM_EMBEDDING_BASE_URL: ${CUSTOM_EMBEDDING_BASE_URL:-}
+  RAG_ENABLED: ${RAG_ENABLED:-true}
+  RAG_REQUIRE_QUOTA: ${RAG_REQUIRE_QUOTA:-true}
+  RAG_MIN_SCORE: ${RAG_MIN_SCORE:-0.35}
+
 services:
   db:
     image: postgres:17-alpine
@@ -32,6 +45,7 @@ services:
   api:
     <<: *api
     environment:
+      <<: *rag-env
       DATABASE_URL: postgresql+psycopg://ruangrpp:${POSTGRES_PASSWORD}@db:5432/ruangrpp
       STORAGE_DIR: /data/uploads
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:${WEB_PORT:-3000},http://127.0.0.1:${WEB_PORT:-3000}}
@@ -71,6 +85,30 @@ services:
       init:
         condition: service_completed_successfully
     mem_limit: 1536m
+    pids_limit: 128
+    restart: unless-stopped
+
+  qdrant:
+    image: qdrant/qdrant:v1.19.2
+    environment:
+      QDRANT__SERVICE__API_KEY: ${QDRANT_API_KEY:-}
+      QDRANT__TELEMETRY_DISABLED: "true"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    restart: unless-stopped
+
+  rag-worker:
+    <<: *api
+    environment:
+      <<: *rag-env
+      DATABASE_URL: postgresql+psycopg://ruangrpp:${POSTGRES_PASSWORD}@db:5432/ruangrpp
+    command: [python, -m, app.rag_worker]
+    depends_on:
+      init:
+        condition: service_completed_successfully
+      qdrant:
+        condition: service_started
+    mem_limit: 1024m
     pids_limit: 128
     restart: unless-stopped
 
@@ -132,3 +170,4 @@ services:
 volumes:
   postgres_data:
   source_files:
+  qdrant_data:

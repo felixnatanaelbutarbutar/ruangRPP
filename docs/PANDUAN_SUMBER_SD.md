@@ -1,6 +1,8 @@
 # Pengumpulan panduan besar dan contoh modul SD
 
-Keputusan implementasi: 14 Oktober 2026. Kurikulum sasaran belum dikunci.
+Keputusan implementasi awal: 14 Oktober 2026. Kurikulum sasaran belum dikunci.
+
+Pembaruan 17 Oktober: pengumpulan mandiri memakai **lima kebutuhan awal**, bukan seluruh daftar mapel. Lihat [pengumpulan ringkas](PENGUMPULAN_RINGKAS.md). Daftar 20 panduan di bawah tetap menjadi referensi pengembangan, bukan kewajiban pengumpulan awal.
 
 ## Jenis sumber yang berbeda
 

@@ -150,3 +150,40 @@ class QuotaGrant(Base):
     credits: Mapped[int] = mapped_column(Integer)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
     suspended_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class RagIndex(Base):
+    __tablename__ = 'rag_indexes'
+    document_id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    id: Mapped[str] = mapped_column(String(36), unique=True)
+    revision: Mapped[int] = mapped_column(Integer)
+    status: Mapped[str] = mapped_column(String(20), default='preview', index=True)
+    embedding: Mapped[dict] = mapped_column(JSON)
+    collection: Mapped[str] = mapped_column(String(100), default='')
+    chunk_count: Mapped[int] = mapped_column(Integer)
+    error: Mapped[str] = mapped_column(Text, default='')
+    retrieval_check: Mapped[dict] = mapped_column(JSON, default=dict)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class RagChunk(Base):
+    __tablename__ = 'rag_chunks'
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    index_id: Mapped[str] = mapped_column(String(36), index=True)
+    ordinal: Mapped[int] = mapped_column(Integer)
+    content: Mapped[dict] = mapped_column(JSON)
+
+
+class LessonDraft(Base):
+    __tablename__ = 'lesson_drafts'
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    teacher_id: Mapped[str] = mapped_column(String(36), index=True)
+    input_data: Mapped[dict] = mapped_column(JSON)
+    result: Mapped[dict] = mapped_column(JSON)
+    references: Mapped[list] = mapped_column(JSON)
+    model_info: Mapped[dict] = mapped_column(JSON)
+    usage: Mapped[dict] = mapped_column(JSON)
+    environment: Mapped[str] = mapped_column(String(15))
+    credits_used: Mapped[int] = mapped_column(Integer, default=1)
+    revision: Mapped[int] = mapped_column(Integer, default=1)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)

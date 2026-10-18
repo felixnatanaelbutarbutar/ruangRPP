@@ -9,3 +9,5 @@ def initialize(engine):
         columns = {c['name'] for c in inspect(connection).get_columns('source_audit')}
         if 'actor_id' not in columns:
             connection.execute(text('ALTER TABLE source_audit ADD COLUMN actor_id VARCHAR(36)'))
+    from .collection_plan import initialize_collection
+    initialize_collection(engine)

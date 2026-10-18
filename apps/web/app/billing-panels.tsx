@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 type Setup = { environment: string; available: boolean; enabled: boolean; server_key_configured: boolean; app_url_valid: boolean };
 type Plan = { id: string; name: string; amount: number; credits: number };
 type Order = { id: string; plan_name: string; amount: number; credits: number; status: string; environment: string; created_at: string; checked_at: string | null; checkout_url: string | null; teacher_email?: string };
-type Billing = { setup: Setup; plans: Plan[]; quota: Record<string, number>; orders: Order[]; total: number };
+type Billing = { setup: Setup; plans: Plan[]; trial: { credits: number; claimed: boolean }; quota: Record<string, number>; orders: Order[]; total: number };
 type Finance = { setup: Setup; environment: string; paid_amount: number; paid_count: number; review_count: number; orders: Order[]; total: number };
 const money = (n: number) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n);
 const time = (s: string) => new Date(s).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
@@ -34,6 +34,7 @@ function useBillingData<T>(path: string) {
       .catch(e => { if (live) setError(e.message); }).finally(() => { if (live) setLoading(false); });
     return () => { live = false; };
   }, [path, revision]);
+  useEffect(() => { const refresh = () => setRevision(r => r + 1); window.addEventListener('rr-quota-changed', refresh); return () => window.removeEventListener('rr-quota-changed', refresh); }, []);
   return { data, loading, error, reload: () => setRevision(r => r + 1) };
 }
 
@@ -60,6 +61,15 @@ export function TeacherBilling() {
   const [message, setMessage] = useState('');
   const [actionError, setActionError] = useState('');
   const [selected, setSelected] = useState<Plan | null>(null);
+  async function claimTrial() {
+    setBusy('trial'); setActionError(''); setMessage('');
+    try {
+      await request('/teacher/billing/trial', {});
+      setMessage('Kuota percobaan sudah aktif. Anda dapat membuat draf di atas.');
+      window.dispatchEvent(new Event('rr-quota-changed'));
+    } catch (e) { setActionError((e as Error).message); }
+    finally { setBusy(''); }
+  }
   async function verify(id: string) {
     setBusy(id); setActionError(''); setMessage('');
     try {
@@ -90,10 +100,11 @@ export function TeacherBilling() {
     {message && <p className="inline-note" role="status">{message}</p>}
     {loading && <p role="status">Memuat pembayaran…</p>}
     {data && <>
-      <div className="billing-balance"><div><span>Kuota produksi</span><strong>{data.quota.production}</strong></div><div><span>Kuota simulasi</span><strong>{data.quota.sandbox}</strong></div><p>Generator masih disiapkan. Kuota belum dapat digunakan untuk membuat modul ajar.</p></div>
+      <div className="billing-balance"><div><span>Kuota produksi</span><strong>{data.quota.production}</strong></div><div><span>Kuota simulasi</span><strong>{data.quota.sandbox}</strong></div><p>Satu kuota dipakai setelah draf AI langsung atau draf berbasis sumber berhasil disimpan.</p></div>
+      <section className="panel teacher-section"><h3>Coba dulu</h3><p>{data.trial.credits} kuota gratis satu kali per akun, tanpa pembayaran. Mode AI langsung dapat digunakan tanpa dokumen sumber.</p><button className="secondary" disabled={!!busy || data.trial.claimed} onClick={claimTrial}>{data.trial.claimed ? 'Kuota percobaan sudah diaktifkan' : busy === 'trial' ? 'Mengaktifkan…' : 'Aktifkan 3 kuota gratis'}</button></section>
       <p className="inline-note">{data.setup.environment === 'sandbox' ? 'Mode sandbox. Pembayaran dan kuota di sini hanya untuk simulasi.' : 'Mode produksi. Pembayaran menggunakan uang nyata.'} {!data.setup.available && 'Pembelian belum dibuka oleh pengelola.'}</p>
       <div className="billing-plans">{data.plans.map(plan => <article key={plan.id} className="panel billing-plan"><h3>{plan.name}</h3><p className="billing-price">{money(plan.amount)}</p><p>{plan.credits} kuota · satu kali pembelian</p><button className="secondary" disabled={!data.setup.available || !!busy} onClick={() => { setSelected(plan); setActionError(''); }}>{data.setup.available ? 'Pilih paket' : 'Belum tersedia'}</button></article>)}</div>
-      {selected && <section className="panel teacher-section billing-confirm" aria-label="Konfirmasi pembelian"><h3>Konfirmasi paket {selected.name}</h3><p>{selected.credits} kuota seharga <strong>{money(selected.amount)}</strong>. Anda akan diarahkan ke Midtrans untuk memilih metode pembayaran. Tidak ada tagihan berulang.</p><p className="hint">{data.setup.environment === 'sandbox' ? 'Ini transaksi simulasi. Jangan gunakan informasi pembayaran nyata.' : 'Pembuatan modul belum dibuka. Pembelian ini hanya mengisi kuota akun.'}</p><div className="button-group"><button className="primary" disabled={!!busy || !data.setup.available} onClick={() => checkout(selected)}>{busy === selected.id ? 'Menyiapkan…' : 'Lanjut ke Midtrans'}</button><button className="secondary" disabled={!!busy} onClick={() => setSelected(null)}>Batal</button></div></section>}
+      {selected && <section className="panel teacher-section billing-confirm" aria-label="Konfirmasi pembelian"><h3>Konfirmasi paket {selected.name}</h3><p>{selected.credits} kuota seharga <strong>{money(selected.amount)}</strong>. Anda akan diarahkan ke Midtrans untuk memilih metode pembayaran. Tidak ada tagihan berulang.</p><p className="hint">{data.setup.environment === 'sandbox' ? 'Ini transaksi simulasi. Jangan gunakan informasi pembayaran nyata.' : 'Periksa pilihan pembelajaran yang tersedia sebelum membeli kuota.'}</p><div className="button-group"><button className="primary" disabled={!!busy || !data.setup.available} onClick={() => checkout(selected)}>{busy === selected.id ? 'Menyiapkan…' : 'Lanjut ke Midtrans'}</button><button className="secondary" disabled={!!busy} onClick={() => setSelected(null)}>Batal</button></div></section>}
       <section className="panel"><div className="panel-head"><div><h3>Riwayat pembayaran</h3><p>Kuota aktif setelah konfirmasi server, bukan hanya setelah kembali dari halaman pembayaran.</p></div></div><OrderList orders={data.orders} busy={busy} verify={verify} /><Pagination page={page} total={data.total} size={20} disabled={loading || !!busy} change={setPage} /></section>
       <p className="hint">Jika status masih menunggu setelah dibayar, pilih Periksa pembayaran. Jangan membayar ulang. Kuota dari transaksi yang dikembalikan atau disengketakan ditahan untuk pemeriksaan.</p>
     </>}

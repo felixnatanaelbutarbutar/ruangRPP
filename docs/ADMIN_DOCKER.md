@@ -4,6 +4,8 @@ Pembaruan 14 Oktober 2026. Cara utama menjalankan aplikasi adalah Docker Compose
 
 ## Cakupan yang tersedia
 
+Pembaruan 17 Oktober: kebutuhan awal dipersempit menjadi lima target pilot Matematika kelas 1. Target lama ada di **Pengembangan nanti**. Form edit menempatkan metadata rinci di bagian **Persiapan sumber AI — kerjakan nanti**. Lihat [pengumpulan ringkas](PENGUMPULAN_RINGKAS.md). Pembaruan memerlukan `docker compose up --build -d`; inisialisasi menambahkan target tanpa menghapus file.
+
 - Login akun individu dengan peran `collector` dan `admin`; kata sandi di-hash Argon2, sesi server selama 12 jam.
 - Unggah PDF/DOCX asli (128 MiB), SHA-256 untuk mendeteksi file identik meskipun namanya berbeda, penyimpanan persisten. Upload dialirkan melalui Next.js; ekstraksi berjalan di worker Docker setelah file tersimpan.
 - Metadata kategori CP/modul/panduan/buku/template/checklist/sumber lokal; fase, kelas, varian agama/seni/bahasa, wilayah, tahun terbit atau tidak diketahui, acuan/versi, penerbit, URL dan catatan izin.

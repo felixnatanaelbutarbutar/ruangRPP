@@ -1,6 +1,7 @@
 'use client';
 import { FormEvent, useCallback, useEffect, useId, useRef, useState } from 'react';
 import { AdminPanels, AdminView, OperationsSummary } from './admin-panels';
+import { AdminRag } from './rag-panels';
 import { LandingView } from './landing';
 
 /* ══════════════════════════════════════════
@@ -27,7 +28,7 @@ type Doc = {
   sha256?: string; history?: { action: string; actor: string; at: string }[];
 };
 type Need = {
-  id: string; label: string;
+  id: string; label: string; priority: 'core' | 'later';
   criteria: { category: string; scope: Scope; curriculum: string; minimum: number; required_phases?: string[]; original_phases?: string[]; source_url?: string };
   applicability: string; note: string; uploaded: number; reviewed: number;
   state: string; document_ids: string[];
@@ -226,8 +227,8 @@ function MetadataForm({ catalog, existing, preset, close, saved }: {
 
   return (
     <Modal
-      title={existing ? 'Lengkapi detail dokumen' : 'Unggah dokumen'}
-      subtitle={existing ? 'Buka bagian yang ingin diperiksa. Isian lain boleh dilengkapi nanti.' : 'Simpan dulu. Detail sumber diperiksa setelah file masuk.'}
+      title={existing ? 'Edit dokumen' : 'Unggah dokumen'}
+      subtitle={existing ? 'Judul dan jenis cukup untuk merapikan koleksi. Pengaturan AI dikerjakan nanti.' : 'Pilih file dan jenisnya. Judul terisi otomatis; isian lain tidak wajib.'}
       close={() => { if (!busy) close(); }}
     >
       <form onSubmit={submit} onInvalidCapture={e => {
@@ -265,11 +266,14 @@ function MetadataForm({ catalog, existing, preset, close, saved }: {
               </select>
             </label>
           </div>
-          {!existing && <details className="metadata-section">
+          {<details className="metadata-section">
             <summary>Tautan sumber (opsional)</summary>
             <div className="metadata-section-body"><label>URL sumber asli<input type="url" maxLength={2000} value={meta.source_url} onChange={e=>set('source_url',e.target.value)} placeholder="Tempel tautan tempat file diperoleh" /></label><p className="hint">Membantu tim menemukan kembali asal dokumen. Boleh dilengkapi nanti.</p></div>
           </details>}
-          {existing && <>
+          {existing && <details className="metadata-section">
+          <summary>Persiapan sumber AI — kerjakan nanti</summary>
+          <div className="metadata-section-body">
+          <p className="hint">Tidak perlu diisi untuk mengumpulkan file. Acuan mencegah tercampurnya versi kurikulum; mapel/fase dan halaman membatasi bagian yang boleh dicari AI. Jangan menebak data yang belum diperiksa.</p>
           <details className="metadata-section">
             <summary>Identitas dan versi</summary>
             <div className="metadata-section-body">
@@ -291,7 +295,7 @@ function MetadataForm({ catalog, existing, preset, close, saved }: {
             <label>Edisi / Nomor Keputusan
               <input value={meta.edition} maxLength={120} onChange={e => set('edition', e.target.value)} placeholder="Isi jika tercantum" />
             </label>
-            <label className="wide">Acuan Kurikulum
+            <label className="wide">Versi / acuan kurikulum yang tercantum
               <input value={meta.curriculum} maxLength={200} onChange={e => set('curriculum', e.target.value)}
                 placeholder="Isi nama acuan dan versi yang tercantum dalam dokumen" />
             </label>
@@ -311,10 +315,10 @@ function MetadataForm({ catalog, existing, preset, close, saved }: {
           {meta.scopes.map((scope, i) => (
             <div className="scope-card" key={i}>
               <div className="section-line">
-                <strong style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>Cakupan {i + 1}</strong>
+                <strong style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>Bagian untuk SD {i + 1}</strong>
                 {meta.scopes.length > 0 && (
                   <button type="button" className="text-button danger" onClick={() => set('scopes', meta.scopes.filter((_, n) => n !== i))}>
-                    Hapus cakupan
+                    Hapus bagian
                   </button>
                 )}
               </div>
@@ -324,7 +328,7 @@ function MetadataForm({ catalog, existing, preset, close, saved }: {
           ))}
           <button type="button" className="secondary small" disabled={meta.scopes.length >= 40}
             onClick={() => set('scopes', [...meta.scopes, { ...initialScope }])}>
-            <Icon name="plus" size={15} /> Tambah cakupan
+            <Icon name="plus" size={15} /> Tambah bagian SD
           </button>
           </div></details>
           <details className="metadata-section">
@@ -332,10 +336,6 @@ function MetadataForm({ catalog, existing, preset, close, saved }: {
           <div className="metadata-section-body">
           <p className="hint">Untuk menelusuri sumber dan mencatat ketentuan pemakaiannya. Persetujuan dilakukan di tab Tinjauan.</p>
           <div className="form-grid">
-            <label className="wide">URL Sumber Asli
-              <input type="url" value={meta.source_url} onChange={e => set('source_url', e.target.value)}
-                placeholder="https://..." maxLength={2000} />
-            </label>
             <label className="checkline wide">
               <input type="checkbox" checked={meta.internal_source} onChange={e => set('internal_source', e.target.checked)} />
               Dokumen disusun oleh tim sendiri (sumber internal)
@@ -350,7 +350,7 @@ function MetadataForm({ catalog, existing, preset, close, saved }: {
             </label>
           </div>
           </div></details>
-          </>}
+          </div></details>}
 
           {error && <div role="alert" className="error"><Icon name="warning" size={15} />{error}</div>}
         </div>
@@ -649,7 +649,8 @@ export default function Page() {
   const [booting, setBooting] = useState(true);
   const [catalog, setCatalog] = useState<Catalog>({ categories: {}, subjects: [], phases: [] });
   const [docs, setDocs] = useState<Doc[]>([]);
-  const [needs, setNeeds] = useState<Need[]>([]);
+  const [allNeeds, setAllNeeds] = useState<Need[]>([]);
+  const [showLater, setShowLater] = useState(false);
   const [view, setView] = useState<View>('overview');
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('');
@@ -690,7 +691,7 @@ export default function Page() {
     setLoading(true); setError('');
     try {
       const [d, r, c] = await Promise.all([api('/documents'), api('/requirements'), api('/catalog')]);
-      setDocs(d.items); setNeeds(r.items); setCatalog(c);
+      setDocs(d.items); setAllNeeds(r.items); setCatalog(c);
     } catch (e) { setError((e as Error).message); }
     finally { setLoading(false); }
   }, []);
@@ -716,7 +717,8 @@ export default function Page() {
   const passed = docs.filter(d => d.auto_status === 'passed').length;
   const manual = docs.filter(d => d.review.content === 'approved' && d.review.rights === 'approved' && d.review.extraction === 'approved').length;
   const eligible = docs.filter(d => d.pipeline === 'eligible_for_indexing').length;
-  const missing = needs.filter(n => n.state === 'missing').length;
+  const needs = allNeeds.filter(n => view === 'requirements' && showLater ? n.priority !== 'core' : n.priority === 'core');
+  const missing = allNeeds.filter(n => n.priority === 'core' && n.state === 'missing').length;
 
   const rows = docs.filter(d =>
     (view !== 'verified' || d.auto_status === 'passed') &&
@@ -895,7 +897,7 @@ export default function Page() {
             <small>{user.role === 'admin' ? 'Admin & Peninjau' : 'Pengumpul Sumber'}</small>
           </div>
           <button className="icon-button" aria-label="Keluar" onClick={async () => {
-            try { await api('/auth/logout', { method: 'POST' }); setUser(null); setDocs([]); setNeeds([]); setError(''); }
+            try { await api('/auth/logout', { method: 'POST' }); setUser(null); setDocs([]); setAllNeeds([]); setError(''); }
             catch (e) { setError((e as Error).message); }
           }}><Icon name="logout" size={18} /></button>
         </div>
@@ -1017,27 +1019,16 @@ export default function Page() {
           {view === 'requirements' && <>
             <div className="notice">
               <Icon name="info" size={16} />
-              Kebutuhan adalah rencana pengumpulan. &quot;Lengkap&quot; berarti target file dan tinjauan terpenuhi, belum berarti sumber aktif di RAG.
+              Daftar awal ini adalah pilot sumber Matematika, bukan batas mata pelajaran generator. Guru sudah dapat memilih mapel lain melalui Draf AI langsung tanpa sumber. Kumpulkan rujukan bertahap sesuai kebutuhan pengguna; unggah setiap file asli sekali.
             </div>
             <div className="section-line section-heading" style={{ marginTop: 16 }}>
-              <h2>{needs.length} Kebutuhan Sumber</h2>
-              {user.role === 'admin' && (
-                <div className="button-group">
-                  <button className="secondary small" onClick={async () => {
-                    setError('');
-                    try { const result = await api('/requirements/guides-sd', { method: 'POST' }); await refresh(); setCategory('Panduan_Mapel'); setNotice(`${result.added} target panduan ditambahkan. File PDF belum diunduh; versi dan izin tetap perlu diperiksa.`); }
-                    catch (e) { setError((e as Error).message); }
-                  }}>Tambahkan 20 Panduan Mapel</button>
-                  <button className="secondary small" onClick={async () => {
-                    setError('');
-                    try { await api('/requirements/template', { method: 'POST' }); saved(); }
-                    catch (e) { setError((e as Error).message); }
-                  }}>Calon CP &amp; Modul</button>
+              <h2>{needs.length} {showLater ? 'kebutuhan untuk nanti' : 'kebutuhan awal'}</h2>
+                <div className="button-group"><button className="secondary small" onClick={() => { setShowLater(!showLater); setCategory(''); setQuery(''); }}>{showLater ? 'Kembali ke prioritas awal' : 'Pengembangan nanti'}</button>
+                  {user.role === 'admin' && showLater &&
                   <button className="primary small" onClick={() => { setEditNeed(undefined); setNeedModal(true); }}>
                     <Icon name="plus" size={15} /> Tambah Kebutuhan
-                  </button>
+                  </button>}
                 </div>
-              )}
             </div>
             {needs.length ? (
               <section className="panel">
@@ -1065,28 +1056,12 @@ export default function Page() {
               <div className="panel empty">
                 <Icon name="requirements" size={32} />
                 <h3>Susun Daftar Kebutuhan Tim</h3>
-                <p>Buat daftar awal CP dan modul ajar SD, lalu sesuaikan varian, acuan, dan penerapannya.</p>
+                <p>{showLater ? 'Tambahkan sumber lain setelah pilot pertama dinilai guru.' : 'Daftar prioritas dibuat saat inisialisasi database Docker. Jalankan pembaruan aplikasi untuk memuatnya.'}</p>
               </div>
             )}
           </>}
 
-          {view === 'vectors' && (
-            <section className="panel vector-panel">
-                            <Badge kind="neutral">TAHAP BERIKUTNYA</Badge>
-              <h2>Pengindeksan belum aktif</h2>
-              <p>Pengindeksan Qdrant belum diaktifkan. Tidak ada file yang dikirim ke penyedia embedding dari dashboard ini.</p>
-              <div className="vector-stats">
-                <div><strong style={{ color: 'var(--green)' }}>{eligible}</strong><span>Memenuhi Syarat</span></div>
-                <div><strong>0</strong><span>Dokumen Diindeks</span></div>
-                <div><strong>{docs.length - eligible}</strong><span>Belum Memenuhi</span></div>
-              </div>
-              <div className="notice">
-                <Icon name="info" size={16} />
-                Sebelum aktif: pratinjau chunk, pilih model embedding, bangun indeks staging, lalu uji retrieval.
-              </div>
-              <button className="secondary" onClick={() => navigate('review')}>Buka Antrean Tinjauan <Icon name="arrow" size={16} /></button>
-            </section>
-          )}
+          {view === 'vectors' && <AdminRag canManage={user.role === 'admin'} openDocument={setDetail} />}
 
           <footer className="page-footer">
             <span>RuangRPP · Pengelolaan sumber pembelajaran</span>
