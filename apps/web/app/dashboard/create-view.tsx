@@ -931,19 +931,19 @@ export function CreateView({
       {openSubjectSheet && (
         <>
           <div
-            className="rpp-scrim"
+            className="bottom-sheet-scrim"
             onClick={() => {
               setOpenSubjectSheet(false);
               setSubjectSearch('');
             }}
           />
-          <div className="rpp-sheet" role="dialog" aria-modal="true" aria-label="Pilih mata pelajaran">
-            <div className="rpp-sheet-handle" />
-            <div className="rpp-sheet-header">
-              <h3 className="rpp-sheet-title">Pilih mata pelajaran</h3>
+          <div className="bottom-sheet" role="dialog" aria-modal="true" aria-label="Pilih mata pelajaran">
+            <div className="bottom-sheet-handle" />
+            <div className="bottom-sheet-header">
+              <h3 className="bottom-sheet-title">Pilih mata pelajaran</h3>
               <button
                 type="button"
-                className="rpp-sheet-close"
+                className="bottom-sheet-close"
                 onClick={() => {
                   setOpenSubjectSheet(false);
                   setSubjectSearch('');
@@ -965,14 +965,14 @@ export function CreateView({
               />
             </div>
 
-            <div className="rpp-sheet-list">
+            <div className="bottom-sheet-list">
               {filteredSubjects.map(s => {
                 const isSelected = (chosenSubject?.name || subject) === s.name;
                 return (
                   <button
                     key={s.name}
                     type="button"
-                    className={`rpp-sheet-item ${isSelected ? 'selected' : ''}`}
+                    className={`bottom-sheet-item ${isSelected ? 'selected' : ''}`}
                     onClick={() => {
                       setSubject(s.name);
                       setVariant('');

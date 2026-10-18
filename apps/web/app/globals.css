@@ -2543,7 +2543,7 @@ textarea.rpp-input {
 }
 
 /* Bottom Sheet Component (§4.3 & §10) */
-.rpp-scrim {
+.bottom-sheet-scrim {
   position: fixed;
   inset: 0;
   background: rgba(23, 43, 85, 0.45);
@@ -2552,7 +2552,7 @@ textarea.rpp-input {
   animation: rppFadeIn 160ms ease-out;
 }
 
-.rpp-sheet {
+.bottom-sheet {
   position: fixed;
   inset: auto 0 0 0;
   max-height: 85dvh;
@@ -2566,7 +2566,7 @@ textarea.rpp-input {
   animation: rppSlideUp 220ms ease-out;
 }
 
-.rpp-sheet-handle {
+.bottom-sheet-handle {
   width: 36px;
   height: 4px;
   background: #cbd5e1;
@@ -2575,7 +2575,7 @@ textarea.rpp-input {
   flex-shrink: 0;
 }
 
-.rpp-sheet-header {
+.bottom-sheet-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2583,14 +2583,14 @@ textarea.rpp-input {
   flex-shrink: 0;
 }
 
-.rpp-sheet-title {
+.bottom-sheet-title {
   font-size: 18px;
   font-weight: 700;
   color: var(--navy-rpp);
   margin: 0;
 }
 
-.rpp-sheet-close {
+.bottom-sheet-close {
   width: 36px;
   height: 36px;
   border-radius: 18px;
@@ -2603,11 +2603,11 @@ textarea.rpp-input {
   cursor: pointer;
 }
 
-.rpp-sheet-close:hover {
+.bottom-sheet-close:hover {
   background: #e2edea;
 }
 
-.rpp-sheet-list {
+.bottom-sheet-list {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -2615,7 +2615,7 @@ textarea.rpp-input {
   padding-right: 4px;
 }
 
-.rpp-sheet-item {
+.bottom-sheet-item {
   min-height: 52px;
   display: flex;
   align-items: center;
@@ -2635,12 +2635,12 @@ textarea.rpp-input {
   transition: background 120ms;
 }
 
-.rpp-sheet-item:hover,
-.rpp-sheet-item:active {
+.bottom-sheet-item:hover,
+.bottom-sheet-item:active {
   background: var(--mint-tipis);
 }
 
-.rpp-sheet-item.selected {
+.bottom-sheet-item.selected {
   font-weight: 700;
   color: var(--teal-dalam);
   background: var(--mint-tipis);
@@ -2654,10 +2654,6 @@ textarea.rpp-input {
 @keyframes rppFadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
-}
-
-.btn-secondary:hover:not(:disabled) {
-  background: var(--kanvas);
 }
 
 .rpp-banner {
