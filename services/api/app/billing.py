@@ -1,8 +1,10 @@
-"""Hosted Snap checkout. Only authenticated server status can activate quota."""
+import collections
 import hashlib
 import hmac
 import json
 import os
+import threading
+import time
 from datetime import timedelta, timezone
 from decimal import Decimal, InvalidOperation
 from typing import Literal
@@ -25,6 +27,28 @@ PLANS = {
 }
 OPEN = ('creating', 'creation_unknown', 'pending', 'review')
 REVERSED = ('refund', 'partial_refund', 'chargeback', 'partial_chargeback')
+
+_webhook_rate_limit: dict[str, list[float]] = collections.defaultdict(list)
+_webhook_rate_lock = threading.Lock()
+
+
+def check_webhook_rate_limit(client_ip: str, max_requests: int = 60, window_seconds: int = 60) -> bool:
+    now_ts = time.monotonic()
+    with _webhook_rate_lock:
+        timestamps = _webhook_rate_limit[client_ip]
+        cutoff = now_ts - window_seconds
+        valid = [t for t in timestamps if t > cutoff]
+        if len(valid) >= max_requests:
+            _webhook_rate_limit[client_ip] = valid
+            return False
+        valid.append(now_ts)
+        _webhook_rate_limit[client_ip] = valid
+        if len(_webhook_rate_limit) > 1000:
+            for ip in list(_webhook_rate_limit.keys()):
+                _webhook_rate_limit[ip] = [t for t in _webhook_rate_limit[ip] if t > cutoff]
+                if not _webhook_rate_limit[ip]:
+                    del _webhook_rate_limit[ip]
+        return True
 
 
 class GatewayRejected(HTTPException):
@@ -284,6 +308,13 @@ def verify(order_id: str, teacher=Depends(current_teacher)):
 
 @router.post('/payments/midtrans/notification')
 async def notification(request: Request):
+    client_ip = (
+        request.headers.get('cf-connecting-ip')
+        or request.headers.get('x-forwarded-for', '').split(',')[0].strip()
+        or (request.client.host if request.client else 'unknown')
+    )
+    if not check_webhook_rate_limit(client_ip):
+        raise HTTPException(429, 'Terlalu banyak permintaan notifikasi pembayaran.')
     raw = bytearray()
     async for chunk in request.stream():
         raw.extend(chunk)

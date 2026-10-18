@@ -1,5 +1,6 @@
 import json
 import os
+import threading
 import time
 from datetime import timedelta
 from typing import Literal
@@ -16,6 +17,9 @@ from .rag import (active_rows, assert_sources, chunk_document, log, qdrant, retr
 from .teacher_auth import current_teacher, same_origin
 from .domain import pipeline
 from . import ai_drafts
+
+_active_teacher_generations: set[str] = set()
+_active_gen_lock = threading.Lock()
 
 
 class Strict(BaseModel):
@@ -291,27 +295,50 @@ def build_rag_router(admin):
 
     @router.post('/teacher/drafts', dependencies=[Depends(same_origin)])
     def create_draft(body: GenerateRequest, teacher=Depends(current_teacher)):
-        identifier = str(uuid5(NAMESPACE_URL, f'rr:draft:{teacher.id}:{body.request_id}'))
-        with Session() as db:
-            # Serialize this teacher's generation + quota deduction; retry returns saved result.
-            db.scalar(select(Teacher).where(Teacher.id == teacher.id).with_for_update())
-            existing = db.get(LessonDraft, identifier)
-            if existing:
-                return draft_payload(existing)
-            recent = db.scalar(select(func.count()).select_from(LessonDraft).where(LessonDraft.teacher_id == teacher.id,
-                                    LessonDraft.created_at > now() - timedelta(days=1)))
-            if recent >= 20:
-                raise HTTPException(429, 'Batas pilot 20 draf per hari tercapai.')
+        with _active_gen_lock:
+            if teacher.id in _active_teacher_generations:
+                raise HTTPException(429, 'Permintaan pembuatan draf sedang berjalan. Tunggu hingga selesai.')
+            _active_teacher_generations.add(teacher.id)
+
+        try:
+            identifier = str(uuid5(NAMESPACE_URL, f'rr:draft:{teacher.id}:{body.request_id}'))
             env, cost = environment(), 1 if need_quota() else 0
-            if cost and quota(db, teacher.id, env) < cost:
-                raise HTTPException(402, 'Kuota belum tersedia. Buka Paket & kuota terlebih dahulu.')
-            result, references, model, usage = generate(db, body)
-            d = LessonDraft(id=identifier, teacher_id=teacher.id, input_data=body.model_dump(exclude={'request_id'}),
-                            result=result, references=references, model_info=model, usage=usage, environment=env, credits_used=cost)
-            db.add(d)
-            log(db, None, f'Menyimpan draf modul {body.mode.upper()}; kuota -{cost} ({env})', teacher)
-            db.commit()
-            return draft_payload(d)
+
+            # 1. Pre-flight check in a short DB session (fail-fast without calling LLM)
+            with Session() as db:
+                existing = db.get(LessonDraft, identifier)
+                if existing:
+                    return draft_payload(existing)
+                recent = db.scalar(select(func.count()).select_from(LessonDraft).where(
+                    LessonDraft.teacher_id == teacher.id,
+                    LessonDraft.created_at > now() - timedelta(days=1)
+                ))
+                if recent >= 20:
+                    raise HTTPException(429, 'Batas pilot 20 draf per hari tercapai.')
+                if cost and quota(db, teacher.id, env) < cost:
+                    raise HTTPException(402, 'Kuota belum tersedia. Buka Paket & kuota terlebih dahulu.')
+
+            # 2. External LLM call (separate session, no exclusive Teacher row lock held during slow API call)
+            with Session() as db:
+                result, references, model, usage = generate(db, body)
+
+            # 3. Final atomic deduction & draft save with exclusive row lock
+            with Session() as db:
+                db.scalar(select(Teacher).where(Teacher.id == teacher.id).with_for_update())
+                existing = db.get(LessonDraft, identifier)
+                if existing:
+                    return draft_payload(existing)
+                if cost and quota(db, teacher.id, env) < cost:
+                    raise HTTPException(402, 'Kuota belum tersedia. Buka Paket & kuota terlebih dahulu.')
+                d = LessonDraft(id=identifier, teacher_id=teacher.id, input_data=body.model_dump(exclude={'request_id'}),
+                                result=result, references=references, model_info=model, usage=usage, environment=env, credits_used=cost)
+                db.add(d)
+                log(db, None, f'Menyimpan draf modul {body.mode.upper()}; kuota -{cost} ({env})', teacher)
+                db.commit()
+                return draft_payload(d)
+        finally:
+            with _active_gen_lock:
+                _active_teacher_generations.discard(teacher.id)
 
     @router.get('/teacher/drafts')
     def list_drafts(page: int = Query(1, ge=1), teacher=Depends(current_teacher)):
